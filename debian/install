@@ -1,0 +1,4 @@
+#!/usr/bin/dh-exec
+usr/local/bin => ${PREFIX}/bin
+usr/local/share/licenses/leap/ => ${PREFIX}/licenses
+debian/changelog => ${PREFIX}/changelog.Debian

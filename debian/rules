@@ -1,0 +1,60 @@
+#!/usr/bin/make -f
+
+include /usr/share/dpkg/default.mk
+include /usr/share/dpkg/architecture.mk
+
+export DH_VERBOSE=1
+
+export MV_VERSION=$(shell echo "$(DEB_VERSION)" | sed -E "s/\s|\.|\-[0-9]+//g")
+
+# Prefix uses in the debian package.
+export PREFIX=usr/opt/leap/$(MV_VERSION)
+
+# Dont run tests
+export DEB_BUILD_OPTIONS=noautodbgsym nostrip notest
+export DEB_BUILD_MAINT_OPTIONS = reproducible=-all hardening=-all,+pie,+fortify
+
+# Remove debug and optimazation flags. We set them ourself
+export DEB_CFLAGS_MAINT_STRIP=-g -02
+export DEB_CXXFLAGS_MAINT_STRIP=-g -02
+export DEB_CPPFLAGS_MAINT_STRIP=-g -02
+export DEB_FCFLAGS_MAINT_STRIP=-g -02
+export DEB_FFLAGS_MAINT_STRIP=-g -02
+export DEB_GJCFLAGS_MAINT_STRIP=-g -02
+export DEB_OBJCFLAGS_MAINT_STRIP=-g -02
+export DEB_OBJCXXFLAGS_MAINT_STRIP=-g -02
+
+# Temporary build and dep
+BUILDDIR=/tmp/build/leap/$(MV_VERSION)
+
+%:
+	dh $@ --buildsystem=none -B$(BUILDDIR)
+
+# Configure the source.
+# Fetch submodules and install dependencies.
+override_dh_auto_configure:
+	git submodule update --init --recursive
+	sudo scripts/install_deps.sh
+	dh_auto_configure
+
+override_dh_auto_build:
+	scripts/pinned_build.sh $(BUILDDIR)/deps $(BUILDDIR) $(shell nproc)
+
+# install into debian/tmp first.
+# then we can move the files into place using dh_install
+override_dh_installdocs:
+override_dh_installchangelogs:
+override_dh_install:
+	make -C $(BUILDDIR) DESTDIR=$(CURDIR)/debian/tmp install
+	dh_install
+
+# Append MV_VERSION to package name to make the package unique.
+override_dh_gencontrol:
+	dh_gencontrol -- -DPackage=leap-$(MV_VERSION)
+
+override_dh_compress:
+	dh_compress $(PREFIX)/changelog.Debian
+
+# Fix package filename.
+rename:
+	dpkg-name ../leap_$(DEB_VERSION)_$(DEB_TARGET_ARCH).deb

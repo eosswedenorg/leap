@@ -1,0 +1,14 @@
+Source: leap
+Section: devel
+Priority: optional
+Maintainer: Henrik Hautakoski <henrik@eossweden.org>
+Build-Depends: debhelper (>= 12), dh-exec, git
+
+Package: leap
+Section: utils
+Priority: optional
+Depends: ${shlibs:Depends}
+Architecture: amd64
+Homepage: https://github.com/AntelopeIO/leap
+Description: C++ implementation of the Antelope protocol
+  daemon and CLI tools including nodeos, cleos and keosd
