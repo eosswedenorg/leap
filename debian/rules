@@ -38,6 +38,7 @@ override_dh_auto_configure:
 	dh_auto_configure
 
 override_dh_auto_build:
+	mkdir -p $(BUILDDIR)/deps
 	scripts/pinned_build.sh $(BUILDDIR)/deps $(BUILDDIR) $(shell nproc)
 
 # install into debian/tmp first.
