@@ -1,3 +1,58 @@
+leap (3.2.2-1ubuntu1) unstable; urgency=medium
+
+  [ Kevin Heifner ]
+  * GH-631 Update preKill info since waiting for producer to change before continuing.
+  * GH-669 Do not reset socket_stream as it can still be in use.
+  * GH-588 Remove +1 to number of blocks latency calculation. With it 0 latency indicates 1 block latency.
+  * GH-588 Add additional logging that would be helpful for debugging
+  * GH-588 Round using lround instead of the original hardcoded +1
+  * GH-662 Fix terminate-at-block to terminate at correct block
+  * GH-662 Fix terminate-at-block test
+  * GH-662 Fixes for terminate-scenarios-test
+
+  [ 766C6164 ]
+  * Propagate all exceptions minus system_error
+  * Added comment on why non-propagating system_error
+
+  [ Kevin Heifner ]
+  * GH-695 Report dirty-db correctly
+  * GH-659 Do not allow truncate back to genesis
+  * GH-659 Skip writing to ship log if log already contains block
+  * GH-659 Allow truncate call when before begin_block otherwise rollback past prune does not work. Added additional test cases.
+
+  [ Alexander Molchevsky ]
+  * Backport to 3.1 of bootstrap new protocol features activation
+
+  [ greg7mdp ]
+  * Silently close connection upon receiving `asio::error::connection_reset`
+  * `main()` should return if appbase initialization fails.
+
+  [ Kevin Heifner ]
+  * GH-659 Add additional comments
+
+  [ Huang-Ming Huang ]
+  * subjective-account-max-failures-window-size
+
+  [ Kevin Heifner ]
+  * GH-768 Move subjective bill log to all level of producer_plugin logger.
+  * GH-768 Move fc_tlog to logger.hpp
+  * GH-768 Log non TRX_TRACE trx logging to all (trace) level logger of producer_plugin.
+  * kick ci/cd
+
+  [ Huang-Ming Huang ]
+  * address PR comment
+  * add reset time until back
+  * extract block_time_tracker
+  * address PR comment
+
+  [ Lin Huang ]
+  * Bump Leap version to release 3.2.2
+
+  [ Henrik Hautakoski ]
+  * New Upstream version
+
+ -- Henrik Hautakoski <henrik@eossweden.org>  Sun, 19 Mar 2023 14:02:20 +0100
+
 leap (3.2.1-1) unstable; urgency=medium
 
   * New Upstream version
