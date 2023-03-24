@@ -10,7 +10,7 @@ from TestHarness import Cluster, TestHelper, Utils, WalletMgr
 # nodeos_read_terminate_at_block_test
 #
 # A few tests centered around read mode of irreversible,
-# speculative and head with terminate-at-block set
+# and head with terminate-at-block set
 #
 ###############################################################
 
@@ -27,7 +27,8 @@ args = TestHelper.parse_args({
     "--clean-run",
     "--dump-error-details",
     "--leave-running",
-    "--keep-logs"
+    "--keep-logs",
+    "--unshared"
 })
 
 Utils.Debug = args.v
@@ -179,7 +180,7 @@ def checkHeadOrSpeculative(head, lib):
 
 # Setup cluster and it's wallet manager
 walletMgr = WalletMgr(True)
-cluster = Cluster(walletd=True)
+cluster = Cluster(walletd=True,unshared=args.unshared)
 cluster.setWalletMgr(walletMgr)
 
 # List to contain the test result message
@@ -189,8 +190,8 @@ try:
     specificNodeosArgs = {
         0 : "--enable-stale-production",
         1 : "--read-mode irreversible --terminate-at-block 75",
-        2 : "--read-mode speculative --terminate-at-block 100",
-        3 : "--read-mode head --terminate-at-block 125",
+        2 : "--read-mode head --terminate-at-block 100",
+        3 : "--read-mode head --terminate-at-block 125"
     }
 
     # Kill any existing instances and launch cluster
@@ -202,7 +203,6 @@ try:
         totalProducers=numOfProducers,
         totalNodes=totalNodes,
         pnodes=1,
-        useBiosBootFile=False,
         topo="mesh",
         specificExtraNodeosArgs=specificNodeosArgs,
     )

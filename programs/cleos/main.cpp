@@ -15,9 +15,9 @@ Usage: programs/cleos/cleos [OPTIONS] SUBCOMMAND
 Options:
   -h,--help                   Print this help message and exit
   -u,--url TEXT=http://localhost:8888/
-                              the http/https URL where nodeos is running
+                              the http URL where nodeos is running
   --wallet-url TEXT=http://localhost:8888/
-                              the http/https URL where keosd is running
+                              the http URL where keosd is running
   -r,--header                 pass specific HTTP header, repeat this option to pass multiple headers
   -n,--no-verify              don't verify peer certificate when using HTTPS
   -v,--verbose                output verbose errors and action output
@@ -105,7 +105,7 @@ Options:
 #include <fc/io/fstream.hpp>
 
 #define CLI11_HAS_FILESYSTEM 0
-#include <cli11/CLI11.hpp>
+#include <CLI/CLI.hpp>
 
 #include "help_text.hpp"
 #include "localize.hpp"
@@ -155,12 +155,10 @@ std::string clean_output( std::string str ) {
    return fc::escape_string( str, nullptr, escape_control_chars );
 }
 
-string default_url = "http://127.0.0.1:8888/";
+string default_url = "http://127.0.0.1:8888";
 string default_wallet_url = "unix://" + (determine_home_directory() / "eosio-wallet" / (string(key_store_executable_name) + ".sock")).string();
 string wallet_url; //to be set to default_wallet_url in main
 std::map<name, std::string>  abi_files_override;
-bool no_verify = false;
-vector<string> headers;
 
 auto   tx_expiration = fc::seconds(30);
 const fc::microseconds abi_serializer_max_time = fc::seconds(10); // No risk to client side serialization taking a long time
@@ -172,15 +170,14 @@ bool   tx_return_packed = false;
 bool   tx_skip_sign = false;
 bool   tx_print_json = false;
 bool   tx_rtn_failure_trace = true;
-bool   tx_read_only = false;
 bool   tx_dry_run = false;
+bool   tx_read = false;
 bool   tx_retry_lib = false;
 uint16_t tx_retry_num_blocks = 0;
 bool   tx_use_old_rpc = false;
 bool   tx_use_old_send_rpc = false;
 string tx_json_save_file;
-bool   print_request = false;
-bool   print_response = false;
+eosio::client::http::config_t http_config;
 bool   no_auto_keosd = false;
 bool   verbose = false;
 int    return_code = 0;
@@ -191,8 +188,6 @@ uint32_t tx_max_net_usage = 0;
 uint32_t delaysec = 0;
 
 vector<string> tx_permission;
-
-eosio::client::http::http_context context;
 
 enum class tx_compression_type {
    none,
@@ -320,10 +315,9 @@ fc::variant call( const std::string& url,
                   const std::string& path,
                   const T& v ) {
    try {
-      auto sp = std::make_unique<eosio::client::http::connection_param>(context, parse_url(url) + path, no_verify ? false : true, headers);
-      return eosio::client::http::do_http_call(*sp, fc::variant(v), print_request, print_response );
+      return eosio::client::http::do_http_call(http_config, url, path, fc::variant(v));
    }
-   catch(boost::system::system_error& e) {
+   catch(connection_exception& e) {
       std::string exec_name;
       if(url == ::default_url) {
          exec_name = node_executable_name;
@@ -331,9 +325,9 @@ fc::variant call( const std::string& url,
          exec_name = key_store_executable_name;
       }
       std::cerr << localized( "Failed http request to ${n} at ${u}; is ${n} running?\n"
-                              "  Error: ${e}",
-                              ("n", exec_name)("u", url)("e", e.what()) ) << std::endl;
-      throw connection_exception(fc::log_messages{FC_LOG_MESSAGE(error, e.what())});
+                              "  Error: Connection refused or malformed URL",
+                              ("n", exec_name)("u", url)) << std::endl;
+      throw;
    }
 }
 
@@ -452,7 +446,7 @@ fc::variant push_transaction( signed_transaction& trx, const std::vector<public_
       }
       sign_transaction(trx, required_keys, info.chain_id);
    };
-   if (!tx_skip_sign) {
+   if (!tx_skip_sign && !tx_read) {
       // sign dry-run transactions only when explcitly requested
       if ( tx_dry_run ) {
          if ( signing_keys.size() > 0 ) {
@@ -468,15 +462,15 @@ fc::variant push_transaction( signed_transaction& trx, const std::vector<public_
       EOSC_ASSERT( !(tx_use_old_rpc && tx_use_old_send_rpc), "ERROR: --use-old-rpc and --use-old-send-rpc are mutually exclusive" );
       EOSC_ASSERT( !(tx_retry_lib && tx_retry_num_blocks > 0), "ERROR: --retry-irreversible and --retry-num-blocks are mutually exclusive" );
       if (tx_use_old_rpc) {
-         EOSC_ASSERT( !tx_read_only, "ERROR: --read-only can not be used with --use-old-rpc" );
          EOSC_ASSERT( !tx_dry_run, "ERROR: --dry-run can not be used with --use-old-rpc" );
+         EOSC_ASSERT( !tx_read, "ERROR: --read can not be used with --use-old-rpc" );
          EOSC_ASSERT( !tx_rtn_failure_trace, "ERROR: --return-failure-trace can not be used with --use-old-rpc" );
          EOSC_ASSERT( !tx_retry_lib, "ERROR: --retry-irreversible can not be used with --use-old-rpc" );
          EOSC_ASSERT( !tx_retry_num_blocks, "ERROR: --retry-num-blocks can not be used with --use-old-rpc" );
          return call( push_txn_func, packed_transaction( trx, compression ) );
       } else if (tx_use_old_send_rpc) {
-         EOSC_ASSERT( !tx_read_only, "ERROR: --read-only can not be used with --use-old-send-rpc" );
          EOSC_ASSERT( !tx_dry_run, "ERROR: --dry-run can not be used with --use-old-send-rpc" );
+         EOSC_ASSERT( !tx_read, "ERROR: --read can not be used with --use-old-send-rpc" );
          EOSC_ASSERT( !tx_rtn_failure_trace, "ERROR: --return-failure-trace can not be used with --use-old-send-rpc" );
          EOSC_ASSERT( !tx_retry_lib, "ERROR: --retry-irreversible can not be used with --use-old-send-rpc" );
          EOSC_ASSERT( !tx_retry_num_blocks, "ERROR: --retry-num-blocks can not be used with --use-old-send-rpc" );
@@ -487,15 +481,18 @@ fc::variant push_transaction( signed_transaction& trx, const std::vector<public_
             throw;
          }
       } else {
-         if( tx_dry_run || tx_read_only ) {
-            EOSC_ASSERT( !tx_retry_lib, "ERROR: --retry-irreversible can not be used with --dry-run or --read-only" );
-            EOSC_ASSERT( !tx_retry_num_blocks, "ERROR: --retry-num-blocks can not be used with --dry-run or --read-only" );
+         if( tx_read || tx_dry_run ) {
+            EOSC_ASSERT( !tx_retry_lib, "ERROR: --retry-irreversible can not be used with --read or --dry-run" );
+            EOSC_ASSERT( !tx_retry_num_blocks, "ERROR: --retry-num-blocks can not be used with --read or --dry-run" );
             try {
-               auto compute_txn_arg = fc::mutable_variant_object ("transaction",
-                                                                  packed_transaction(trx,compression));
-               return call( compute_txn_func, compute_txn_arg);
+               auto args = fc::mutable_variant_object ("transaction", packed_transaction(trx,compression));
+               if( tx_read ) {
+                  return call( send_read_only_txn_func, args );
+               } else {
+                  return call( compute_txn_func, args );
+               }
             } catch( chain::missing_chain_api_plugin_exception& ) {
-               std::cerr << "New RPC compute_transaction may not be supported. Submit to a different node." << std::endl;
+               std::cerr << "New RPC compute_transaction or send_read_only_transaction may not be supported. Submit to a different node." << std::endl;
                throw;
             }
          } else {
@@ -1057,7 +1054,7 @@ struct set_action_permission_subcommand {
    string requirementStr;
 
    set_action_permission_subcommand(CLI::App* actionRoot) {
-      auto permissions = actionRoot->add_subcommand("permission", localized("Set paramaters dealing with account permissions"));
+      auto permissions = actionRoot->add_subcommand("permission", localized("Set parameters dealing with account permissions"));
       permissions->add_option("account", accountStr, localized("The account to set/delete a permission authority for"))->required();
       permissions->add_option("code", codeStr, localized("The account that owns the code for the action"))->required();
       permissions->add_option("type", typeStr, localized("The type of the action"))->required();
@@ -1141,8 +1138,6 @@ void ensure_keosd_running(CLI::App* app) {
 
         vector<std::string> pargs;
         pargs.push_back("--http-server-address");
-        pargs.push_back("");
-        pargs.push_back("--https-server-address");
         pargs.push_back("");
         pargs.push_back("--unix-socket-path");
         pargs.push_back(string(key_store_executable_name) + ".sock");
@@ -2741,7 +2736,7 @@ CLI::callback_t header_opt_callback = [](CLI::results_t res) {
    vector<string>::iterator itr;
 
    for (itr = res.begin(); itr != res.end(); itr++) {
-       headers.push_back(*itr);
+       http_config.headers.push_back(*itr);
    }
 
    return true;
@@ -2764,11 +2759,28 @@ CLI::callback_t abi_files_overide_callback = [](CLI::results_t account_abis) {
    return true;
 };
 
+struct set_url_no_trailing_slash {
+   std::string& url;
+   set_url_no_trailing_slash(std::string& bind_arg) : url(bind_arg) {}
+   void operator()(const std::string& from) const {
+      url = from;
+      if (url.size() && url.back()=='/') url.resize(url.size()-1); // remove trailing slash
+   }
+};
+
+struct get_block_params {
+   string blockArg;
+   bool get_bhs = false;
+   bool get_binfo = false;
+   bool get_braw  = false;
+   bool get_bheader = false;
+   bool get_bheader_extensions = false;
+};
 
 int main( int argc, char** argv ) {
 
    fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
-   context = eosio::client::http::create_http_context();
+
    wallet_url = default_wallet_url;
 
    CLI::App app{"Command Line Interface to EOSIO Client"};
@@ -2788,18 +2800,22 @@ int main( int argc, char** argv ) {
    app.add_option( "--wallet-host", obsoleted_option_host_port, localized("The host where ${k} is running", ("k", key_store_executable_name)) )->group("");
    app.add_option( "--wallet-port", obsoleted_option_host_port, localized("The port where ${k} is running", ("k", key_store_executable_name)) )->group("");
 
-   app.add_option( "-u,--url", ::default_url, localized( "The http/https URL where ${n} is running", ("n", node_executable_name)))->capture_default_str();
-   app.add_option( "--wallet-url", wallet_url, localized("The http/https URL where ${k} is running", ("k", key_store_executable_name)))->capture_default_str();
+   app.add_option_function<std::string>( "-u,--url", set_url_no_trailing_slash(::default_url),
+      localized( "The http/https URL where ${n} is running", ("n", node_executable_name)))->default_str(::default_url);
+   app.add_option_function<std::string>( "--wallet-url", set_url_no_trailing_slash(wallet_url),
+      localized("The http/https URL where ${k} is running", ("k", key_store_executable_name)))->default_str(::default_wallet_url);
 
    app.add_option( "--abi-file", abi_files_overide_callback, localized("In form of <contract name>:<abi file path>, use a local abi file for serialization and deserialization instead of getting the abi data from the blockchain; repeat this option to pass multiple abi files for different contracts"))->type_size(0, 1000);
    app.add_option( "-r,--header", header_opt_callback, localized("Pass specific HTTP header; repeat this option to pass multiple headers"));
-   app.add_flag( "-n,--no-verify", no_verify, localized("Don't verify peer certificate when using HTTPS"));
+   app.add_flag( "-n,--no-verify", http_config.no_verify_cert, localized("Don't verify peer certificate when using HTTPS"));
    app.add_flag( "--no-auto-" + string(key_store_executable_name), no_auto_keosd, localized("Don't automatically launch a ${k} if one is not currently running", ("k", key_store_executable_name)));
    app.parse_complete_callback([&app]{ ensure_keosd_running(&app);});
 
    app.add_flag( "-v,--verbose", verbose, localized("Output verbose errors and action console output"));
-   app.add_flag("--print-request", print_request, localized("Print HTTP request to STDERR"));
-   app.add_flag("--print-response", print_response, localized("Print HTTP response to STDERR"));
+   app.add_flag("--print-request", http_config.print_request, localized("Print HTTP request to STDERR"));
+   app.add_flag("--print-response", http_config.print_response, localized("Print HTTP response to STDERR"));
+   app.add_flag("--http-verbose", http_config.verbose, localized("Print HTTP verbose information to STDERR"));
+   app.add_flag("--http-trace", http_config.trace, localized("Print HTTP debug trace information to STDERR"));
 
    auto version = app.add_subcommand("version", localized("Retrieve version information"));
    version->require_subcommand();
@@ -2995,29 +3011,39 @@ int main( int argc, char** argv ) {
    });
 
    // get block
-   string blockArg;
-   bool get_bhs = false;
-   bool get_binfo = false;
+   get_block_params params;
    auto getBlock = get->add_subcommand("block", localized("Retrieve a full block from the blockchain"));
-   getBlock->add_option("block", blockArg, localized("The number or ID of the block to retrieve"))->required();
-   getBlock->add_flag("--header-state", get_bhs, localized("Get block header state from fork database instead") );
-   getBlock->add_flag("--info", get_binfo, localized("Get block info from the blockchain by block num only") );
-   getBlock->callback([&blockArg, &get_bhs, &get_binfo] {
-      EOSC_ASSERT( !(get_bhs && get_binfo), "ERROR: Either --header-state or --info can be set" );
-      if (get_binfo) {
+   getBlock->add_option("block", params.blockArg, localized("The number or ID of the block to retrieve"))->required();
+   getBlock->add_flag("--header-state", params.get_bhs, localized("Get block header state from fork database instead") );
+   getBlock->add_flag("--info", params.get_binfo, localized("Get block info from the blockchain by block num only") );
+   getBlock->add_flag("--raw", params.get_braw, localized("Get raw block from the blockchain") );
+   getBlock->add_flag("--header", params.get_bheader, localized("Get block header from the blockchain") );
+   getBlock->add_flag("--header-with-extensions", params.get_bheader_extensions, localized("Get block header with block exntesions from the blockchain") );
+
+   getBlock->callback([&params] {
+      int num_flags = params.get_bhs + params.get_binfo + params.get_braw + params.get_bheader + params.get_bheader_extensions;
+      EOSC_ASSERT( num_flags <= 1, "ERROR: Only one of the following flags can be set: --header-state, --info, --raw, --header, --header-with-extensions." );
+      if (params.get_binfo) {
          std::optional<int64_t> block_num;
          try {
-            block_num = fc::to_int64(blockArg);
+            block_num = fc::to_int64(params.blockArg);
          } catch (...) {
             // error is handled in assertion below
          }
-         EOSC_ASSERT( block_num.has_value() && (*block_num > 0), "Invalid block num: ${block_num}", ("block_num", blockArg) );
+         EOSC_ASSERT( block_num.has_value() && (*block_num > 0), "Invalid block num: ${block_num}", ("block_num", params.blockArg) );
          const auto arg = fc::variant_object("block_num", static_cast<uint32_t>(*block_num));
          std::cout << fc::json::to_pretty_string(call(get_block_info_func, arg)) << std::endl;
       } else {
-         const auto arg = fc::variant_object("block_num_or_id", blockArg);
-         if (get_bhs) {
+         const auto arg = fc::variant_object("block_num_or_id", params.blockArg);
+         if (params.get_bhs) {
             std::cout << fc::json::to_pretty_string(call(get_block_header_state_func, arg)) << std::endl;
+         } else if (params.get_braw) {
+            std::cout << fc::json::to_pretty_string(call(get_raw_block_func, arg)) << std::endl;
+         } else if (params.get_bheader || params.get_bheader_extensions) {
+            std::cout << fc::json::to_pretty_string(
+               call(get_block_header_func,
+                    fc::mutable_variant_object("block_num_or_id", params.blockArg)
+                                              ("include_extensions", params.get_bheader_extensions))) << std::endl;
          } else {
             std::cout << fc::json::to_pretty_string(call(get_block_func, arg)) << std::endl;
          }
@@ -3450,9 +3476,9 @@ int main( int argc, char** argv ) {
         fc::path cpath = fc::canonical(fc::path(contractPath));
 
         if( wasmPath.empty() ) {
-           wasmPath = (cpath / (cpath.filename().generic_string()+".wasm")).generic_string();
+           wasmPath = (cpath / fc::path(cpath.filename().generic_string()+".wasm")).generic_string();
         } else if ( boost::filesystem::path(wasmPath).is_relative() ) {
-           wasmPath = (cpath / wasmPath).generic_string();
+           wasmPath = (cpath / fc::path(wasmPath)).generic_string();
         }
 
         std::cerr << localized(("Reading WASM from " + wasmPath + "...").c_str()) << std::endl;
@@ -3506,9 +3532,9 @@ int main( int argc, char** argv ) {
         fc::path cpath = fc::canonical(fc::path(contractPath));
 
         if( abiPath.empty() ) {
-           abiPath = (cpath / (cpath.filename().generic_string()+".abi")).generic_string();
+           abiPath = (cpath / fc::path(cpath.filename().generic_string()+".abi")).generic_string();
         } else if ( boost::filesystem::path(abiPath).is_relative() ) {
-           abiPath = (cpath / abiPath).generic_string();
+           abiPath = (cpath / fc::path(abiPath)).generic_string();
         }
 
         EOS_ASSERT( fc::exists( abiPath ), abi_file_not_found, "no abi file found ${f}", ("f", abiPath)  );
@@ -3896,6 +3922,7 @@ int main( int argc, char** argv ) {
    actionsSubcommand->add_option("action", action,
                                  localized("A JSON string or filename defining the action to execute on the contract"))->required()->capture_default_str();
    actionsSubcommand->add_option("data", data, localized("The arguments to the contract"))->required();
+   actionsSubcommand->add_flag("--read", tx_read, localized("Specify an action is read-only"));
 
    add_standard_transaction_options_plus_signing(actionsSubcommand);
    actionsSubcommand->callback([&] {
@@ -3925,8 +3952,8 @@ int main( int argc, char** argv ) {
    trxSubcommand->add_option("transaction", trx_to_push, localized("The JSON string or filename defining the transaction to push"))->required();
    trxSubcommand->add_option("--signature", extra_sig_opt_callback, localized("append a signature to the transaction; repeat this option to append multiple signatures"))->type_size(0, 1000);
    add_standard_transaction_options_plus_signing(trxSubcommand);
-   trxSubcommand->add_flag("-o,--read-only", tx_read_only, localized("Deprecated, use --dry-run instead"));
    trxSubcommand->add_flag("--dry-run", tx_dry_run, localized("Specify a transaction is dry-run"));
+   trxSubcommand->add_flag("--read", tx_read, localized("Specify a transaction is read-only"));
 
    trxSubcommand->callback([&] {
       fc::variant trx_var = json_from_file_or_string(trx_to_push);

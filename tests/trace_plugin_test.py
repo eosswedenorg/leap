@@ -6,8 +6,7 @@ import time
 import unittest
 import os
 
-from TestHarness import Cluster, Node, TestHelper, Utils, WalletMgr
-from core_symbol import CORE_SYMBOL
+from TestHarness import Cluster, Node, TestHelper, Utils, WalletMgr, CORE_SYMBOL
 
 class TraceApiPluginTest(unittest.TestCase):
     sleep_s = 1
@@ -45,9 +44,10 @@ class TraceApiPluginTest(unittest.TestCase):
         time.sleep(self.sleep_s)
 
     def get_block(self, params: str, node: Node) -> json:
-        base_cmd_str = ("curl http://%s:%s/v1/") % (TestHelper.LOCAL_HOST, node.port)
-        cmd_str = base_cmd_str + "trace_api/get_block  -X POST -d " + ("'{\"block_num\":%s}'") % params
-        return Utils.runCmdReturnJson(cmd_str)
+        resource = "trace_api"
+        command = "get_block"
+        payload = {"block_num" : params}
+        return node.processUrllibRequest(resource, command, payload)
 
     def test_TraceApi(self) :
         node = self.cluster.getNode(0)
@@ -84,9 +84,9 @@ class TraceApiPluginTest(unittest.TestCase):
 
         # verify trans via trace_api by calling get_block RPC
         blockFromTraceApi = self.get_block(blockNum, node)
-        self.assertIn("transactions", blockFromTraceApi)
+        self.assertIn("transactions", blockFromTraceApi["payload"])
         isTrxInBlockFromTraceApi = False
-        for trx in blockFromTraceApi["transactions"]:
+        for trx in blockFromTraceApi["payload"]["transactions"]:
             self.assertIn("id", trx)
             if (trx["id"] == transId) :
                 isTrxInBlockFromTraceApi = True

@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
 
-import decimal
-import re
 import json
-import os
 import copy
-import math
-import time
 
-from TestHarness import Account, Cluster, Node, ReturnType, TestHelper, Utils, WalletMgr
+from TestHarness import Cluster, TestHelper, Utils, WalletMgr, CORE_SYMBOL
 from TestHarness.Cluster import PFSetupPolicy
 from TestHarness.TestHelper import AppArgs
 
@@ -22,11 +17,10 @@ from TestHarness.TestHelper import AppArgs
 Print=Utils.Print
 errorExit=Utils.errorExit
 cmdError=Utils.cmdError
-from core_symbol import CORE_SYMBOL
 
 args = TestHelper.parse_args({"--host","--port","-p","--defproducera_prvt_key","--defproducerb_prvt_key"
                               ,"--dump-error-details","--dont-launch","--keep-logs","-v","--leave-running","--clean-run"
-                              ,"--sanity-test","--wallet-port"})
+                              ,"--sanity-test","--wallet-port","--unshared"})
 server=args.host
 port=args.port
 debug=args.v
@@ -47,7 +41,8 @@ cluster=Cluster(host=server,
                 port=port, 
                 walletd=True,
                 defproduceraPrvtKey=defproduceraPrvtKey, 
-                defproducerbPrvtKey=defproducerbPrvtKey)
+                defproducerbPrvtKey=defproducerbPrvtKey,
+                unshared=args.unshared)
 walletMgr=WalletMgr(True, port=walletPort)
 testSuccessful=False
 killEosInstances=not dontKill
@@ -133,7 +128,7 @@ try:
     transId=node.createInitializeAccount(testeraAccount, cluster.defproduceraAccount, stakedDeposit=0, waitForTransBlock=False, exitOnError=True)
 
     Print("Create new account %s via %s" % (testerbAccount.name, cluster.defproduceraAccount.name))
-    transId=node.createInitializeAccount(testerbAccount, cluster.defproduceraAccount, stakedDeposit=0, waitForTransBlock=False, exitOnError=True)
+    transId=node.createInitializeAccount(testerbAccount, cluster.defproduceraAccount, stakedDeposit=0, waitForTransBlock=True, exitOnError=True)
 
     Print("Validating accounts after user accounts creation")
     accounts=[testeraAccount, testerbAccount]
@@ -163,9 +158,9 @@ try:
         packedTrx["packed_trx"] = packed_trx_param + "00000000"
 
         exitMsg = "failed to send packed transaction: %s" % (packedTrx)
-        sentTrx = node.processCurlCmd("chain", "send_transaction", json.dumps(packedTrx), silentErrors=False, exitOnError=True, exitMsg=exitMsg)
+        sentTrx = node.processUrllibRequest("chain", "send_transaction", packedTrx, silentErrors=False, exitOnError=True, exitMsg=exitMsg)
         Print("sent transaction json: %s" % (sentTrx))
-        trx_id = sentTrx["transaction_id"]
+        trx_id = sentTrx["payload"]["transaction_id"]
         postedTrxs.append(trx_id)
 
     assert len(postedTrxs) == trxNumber, Print("posted transactions number %d doesn't match %d" % (len(postedTrxs), trxNumber))

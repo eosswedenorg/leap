@@ -13,7 +13,7 @@ Print=Utils.Print
 errorExit=Utils.errorExit
 cmdError=Utils.cmdError
 
-args = TestHelper.parse_args({"-v","--clean-run", "--dump-error-details","--keep-logs"})
+args = TestHelper.parse_args({"-v","--clean-run", "--dump-error-details","--keep-logs","--unshared"})
 debug=args.v
 killAll=args.clean_run
 killEosInstances = True
@@ -22,8 +22,7 @@ dumpErrorDetails = dumpErrorDetails=args.dump_error_details
 
 
 Utils.Debug=debug
-https_port = 5555
-cluster=Cluster(walletd=True)
+cluster=Cluster(walletd=True,unshared=args.unshared)
 
 testSuccessful=False
 
@@ -35,10 +34,6 @@ try:
     TestHelper.printSystemInfo("BEGIN")
 
     Print("Stand up cluster")
-    # standup cluster with HTTPS enabled, but not configured
-    # HTTP should still work
-    extraArgs={ 0 : "--https-server-address 127.0.0.1:5555" }
-    # specificExtraNodeosArgs=extraArgs
 
     if cluster.launch(dontBootstrap=True, loadSystemContract=False) is False:
         cmdError("launcher")

@@ -19,7 +19,7 @@ from TestHarness.Cluster import PFSetupPolicy
 
 # Parse command line arguments
 args = TestHelper.parse_args({"-v","--clean-run","--dump-error-details","--leave-running",
-                              "--keep-logs", "--alternate-version-labels-file"})
+                              "--keep-logs","--alternate-version-labels-file","--unshared"})
 Utils.Debug=args.v
 killAll=args.clean_run
 dumpErrorDetails=args.dump_error_details
@@ -30,7 +30,7 @@ keepLogs=args.keep_logs
 alternateVersionLabelsFile=args.alternate_version_labels_file
 
 walletMgr=WalletMgr(True)
-cluster=Cluster(walletd=True)
+cluster=Cluster(walletd=True,unshared=args.unshared)
 cluster.setWalletMgr(walletMgr)
 
 def restartNode(node: Node, chainArg=None, addSwapFlags=None, nodeosPath=None):
@@ -92,7 +92,6 @@ try:
     # avoid dropping late blocks
     assert cluster.launch(pnodes=4, totalNodes=4, prodCount=1, totalProducers=4,
                           extraNodeosArgs=" --plugin eosio::producer_api_plugin ",
-                          useBiosBootFile=False,
                           specificExtraNodeosArgs={
                              0:"--http-max-response-time-ms 990000",
                              1:"--http-max-response-time-ms 990000",
@@ -111,11 +110,11 @@ try:
 
     def pauseBlockProductions():
         for node in allNodes:
-            if not node.killed: node.processCurlCmd("producer", "pause", "")
+            if not node.killed: node.processUrllibRequest("producer", "pause")
 
     def resumeBlockProductions():
         for node in allNodes:
-            if not node.killed: node.processCurlCmd("producer", "resume", "")
+            if not node.killed: node.processUrllibRequest("producer", "resume")
 
     def areNodesInSync(nodes:[Node]):
         # Pause all block production to ensure the head is not moving

@@ -50,11 +50,21 @@ namespace eosio { namespace chain {
 #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
       struct eosvmoc_tier {
          eosvmoc_tier(const boost::filesystem::path& d, const eosvmoc::config& c, const chainbase::database& db)
-          : cc(d, c, db), exec(cc),
-            mem(wasm_constraints::maximum_linear_memory/wasm_constraints::wasm_page_size) {}
+          : cc(d, c, db) {
+             // construct exec for the main thread
+             init_thread_local_data();
+          }
+
+         // Support multi-threaded execution.
+         void init_thread_local_data() {
+            exec = std::make_unique<eosvmoc::executor>(cc);
+         }
+
          eosvmoc::code_cache_async cc;
-         eosvmoc::executor exec;
-         eosvmoc::memory mem;
+
+         // Each thread requires its own exec and mem. Defined in wasm_interface.cpp
+         thread_local static std::unique_ptr<eosvmoc::executor> exec;
+         thread_local static eosvmoc::memory mem;
       };
 #endif
 
@@ -92,6 +102,11 @@ namespace eosio { namespace chain {
                wasm_instantiation_cache.modify(it, [](wasm_cache_entry& e) {
                   e.module.release()->fast_shutdown();
                });
+      }
+
+      bool is_code_cached(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version) const {
+         wasm_cache_index::iterator it = wasm_instantiation_cache.find( boost::make_tuple(code_hash, vm_type, vm_version) );
+         return it != wasm_instantiation_cache.end();
       }
 
       std::vector<uint8_t> parse_initial_memory(const Module& module) {
