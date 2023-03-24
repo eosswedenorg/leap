@@ -1,3 +1,34 @@
+leap (4.0.0-rc2-1) unstable; urgency=medium
+
+  [ Kevin Heifner ]
+  * GH-850 Pass a large time limit so python does not have to handle more=true case.
+
+  [ 766C6164 ]
+  * schedule snapshot at exact block num of another one
+
+  [ Kevin Heifner ]
+  * GH-854 Use max-transaction-time -1 like other integration tests
+
+  [ Huang-Ming Huang ]
+  * huangminghuang/unshare-import-fix
+
+  [ Kevin Heifner ]
+  * GH-871 Add max-transaction-time -1 for loading of contract
+  * GH-871 Use max-transaction-time=-1 for consistency
+
+  [ Clayton Calabrese ]
+  * restore lost changes due to splitting of Node.py and moving of functions
+  * remove hardcoded 999 time limit for getTable and depend on version. Change from 99999 to 999 for non v2 nodeos
+  * add forgotten piece of changing default time limit for cleosLimit
+
+  [ Kevin Heifner ]
+  * GH-861 Make sure to keep sending as long as there are items queued up to send.
+
+  [ Lin Huang ]
+  * Bump release/4.0.0 to rc2
+
+ -- Henrik Hautakoski <henrik@eossweden.org>  Fri, 24 Mar 2023 12:12:10 +0100
+
 leap (4.0.0-rc1-1ubuntu1) unstable; urgency=medium
 
   [ Peter Oschwald ]
