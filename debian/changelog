@@ -1,3 +1,2703 @@
+leap (4.0.0-rc1-1ubuntu1) unstable; urgency=medium
+
+  [ Peter Oschwald ]
+  * Transaction Generator - Initial commit.
+  * Transaction Generator - Initial commit.
+  * Transaction generator will assume test accounts are already created and will be passed in via command line arguments.
+
+  [ Jonathan Giszczak ]
+  * Basic performance test runner.
+
+  [ Peter Oschwald ]
+  * Starting to provide command line interface for transaction generator.
+  * Finish wiring up the performance_test_basic.py to call the txn_generator and provide initial arguments
+  * Renaming to trx_generator
+  * Quick formatting updates.
+
+  [ Chris Gundlach ]
+  * updated constructor for p2p_trx_provider
+  * removed txn_generator
+  * culled net plugin p2p code
+
+  [ Peter Oschwald ]
+  * Fix send_transaction method arguments so it will compile.
+  * Add delimeter between nonce prefix and nonce to allow for easier parsing out of transaction downstream
+  * Add the microseconds timestamp of the transaction update right before signing for use in calculating transaction latency downstream
+  * Remove notion of batching transactions and simply create initial vector of all base transactions.
+  * Remove previous push transaction implementations and tie into trx_provider send interface.
+  * Update method name for clarity and logging.
+  * Add method to update and resign transactions for eventual transaction reuse.
+  * Quick reformat to clean up a couple things.
+  * Add ability to update & re-sign transactions before sending.
+  * Pass in account private keys, for signing transactions, from the test harness script.
+  * Create command line argument for providing the last irreversible block id to the generator.
+
+  [ Chris Gundlach ]
+  * switched to a socket implementation
+
+  [ Peter Oschwald ]
+  * Create actions and transactions in more efficient manner.
+
+  [ Chris Gundlach ]
+  * added single send for signed trx
+
+  [ Peter Oschwald ]
+  * Address peer review comments: exclusively use snake case except in template types.
+  * Address peer review comments.
+
+  [ Chris Gundlach ]
+  * cleaned up spacing, naming and added comments
+
+  [ Peter Oschwald ]
+  * Add cli params for configuring test transaction duration (sec) and target generation transactions per second (tps).
+
+  [ Chris Gundlach ]
+  * fixed buffer creation bug; added logging
+
+  [ Clayton Calabrese ]
+  * performance_test_basic.py:clean up log files. wait for lib to advance before and after trx_generator call. scrap log for transaction count.
+  * remove print statement
+  * clean up variables in performance_test_basic.
+  * change from microseconds to seconds for transaction experation to resolve failures due to expired transactions. Add missing declaration to trx/generator main.cpp.
+  * remove unused import
+  * revert unintended whitespace changes
+
+  [ Chris Gundlach ]
+  * initial trx_tps_tester
+  * fixed arithmetic error; used std conversion
+
+  [ Clayton Calabrese ]
+  * expand data stored by performance_test_basic.py. Capture data into the python itself for future use. Add some helper functions and classes to facilitate all this.
+
+  [ Chris Gundlach ]
+  * added unit tests; fixed various issues identified by tests
+
+  [ Clayton Calabrese ]
+  * allowed passing of a logging level to cluster that will be applied to created logging.json
+  * clean and consolidate python functions in performance_test_basic.
+
+  [ Chris Gundlach ]
+  * added validation of test parameters
+  * added test with longer simulated processing time
+  * reverted params back to uint32_t; changed sleep_time stat name
+
+  [ Clayton Calabrese ]
+  * update totals on the fly in performance_test. Reduce code. capture stats better.
+
+  [ Chris Gundlach ]
+  * added trx generator tests
+  * added include of <thread>
+  * updated delay time
+  * fixed cmake test for trx_generator
+
+  [ Peter Oschwald ]
+  * Update test as trace api moved into default setup.
+  * Fix generator, for now, to at least honor the number of trxs expected to send (not rate or time limit).
+
+  [ Clayton Calabrese ]
+  * address PR comments about fstrings and type conversion
+  * change blockId variable to better reflect what it actually is.
+  * rename trxResult to actually fit what is is a result of, a block
+  * update regex parsing in performance_test_basic to handle the old version of logging
+  * use from_variant to determine logging_level in less code
+
+  [ Chris Gundlach ]
+  * added trx_generator to cmake
+  * added check for null monitor
+  * removed code from main and put in trx_generator
+  * fixed member variable being hidden by local variable
+  * modified rate test to look at return value from generate and send call
+
+  [ Peter Oschwald ]
+  * Update import for new TestHarness package
+
+  [ Clayton Calabrese ]
+  * add script to scrap data from nodeos logs. Separate out helper functions from performance_test_basic. Fix a bug in the test regarding cease block
+
+  [ Chris Gundlach ]
+  * added tps_performance_monitor
+  * added tests for tps_performance_monitor
+
+  [ Clayton Calabrese ]
+  * Rename some functions and move waitForEmptyBlocks back to test where it is used.
+
+  [ Chris Gundlach ]
+  * added case to check for lag start resetting
+
+  [ Clayton Calabrese ]
+  * added option to pass ceaseBlock to read_log_data
+  * Change from checking == to is for None comparison
+  * Create a test to ensure Nodeos log scraping works as expected.
+  * Rework nodeos_log_scraping_test and add old logging form to test.
+  * name nodeos logs after their patch number. Add explicit defaults in test.
+
+  [ Chris Gundlach ]
+  * added creation of and parameters for tps_performance_monitor
+  * fixes to trx_generator param and added validation
+
+  [ Peter Oschwald ]
+  * Add TPS scoring including min, max, average, and standard deviation using measurements of pairs of consecutive blocks over a defined window of blocks.
+  * Update to better use python idioms and libraries. Add minor inline documentation of behavior.
+  * Some whitespace cleanup.
+  * Some addl whitespace cleanup.
+
+  [ Chris Gundlach ]
+  * improved logging on test failure
+
+  [ Peter Oschwald ]
+  * Make duration and tps configurable to python test script.
+  * Add numpy dependency installation to Dockerfile for ubuntu20
+  * Need to install python3-pip first.
+
+  [ Clayton Calabrese ]
+  * allow exporting of data from numpy analysis to json for later consumption
+
+  [ Peter Oschwald ]
+  * Provide genesis.json file for performance harness
+  * Update max-transaction-cpu-usage per peer review.
+
+  [ Clayton Calabrese ]
+  * rewrite exportAsJSON to use a json object rather than string. Get nodeos version from console.
+  * don't assume location of nodeos in exportAsJSON
+
+  [ Peter Oschwald ]
+  * Increase max block net usage.
+  * Clean up argument.
+  * Have help display defaults by default.
+
+  [ Chris Gundlach ]
+  * added early termination status
+
+  [ Clayton Calabrese ]
+  * address PR comments concerning how nodeos version is obtained and adding a save-json option to performance_test_basic.
+  * performance stats json: provide default path and make path settable rather than option to save or not
+
+  [ Peter Oschwald ]
+  * Add testing around TPS scoring implementation.
+
+  [ Clayton Calabrese ]
+  * allow both the option to save logs and the path
+  * fix format of arguments
+
+  [ Chris Gundlach ]
+  * added error code handling for python script
+  * cmake changes to add prometheus plugin
+  * added prometheus plugin skeleton code
+  * took out unnecessary include/lib paths
+  * took out unecessary includes/dependencies
+
+  [ Jonathan Giszczak ]
+  * Port eosio-launcher to Python - initial commit with command line parsing
+
+  [ Chris Gundlach ]
+  * changed to make building prometheus plugin mandatory
+
+  [ Peter Oschwald ]
+  * Break out chain data section knowledge into chainGuide.
+  * Update ubuntu22 to install numpy
+  * Update ubuntu18 to install numpy
+  * Update ubuntu18 to install numpy
+  * Update ubuntu18 to install python3 dataclasses
+  * Use float for avg and std deviation for additional needed procision.
+  * Install numpy and dataclasses where necessary in docker builds.
+  * Fix whitespace.
+  * Fix whitespace.
+  * Update report format. Allow report creation separate from writing to file.
+
+  [ Clayton Calabrese ]
+  * initial changes to setup multiple transaction generators.
+  * Improve performance_test_basic. Solve failure. Add seperate script for spawning multi trx generators.
+  * code review to address formatting of code.
+  * adopt a indentation style for python involving multiple line function calls
+
+  [ Peter Oschwald ]
+  * Add calculating and reporting on block size over time during test.
+  * Use Ubuntu python3-numpy package instead of installing through pip
+
+  [ Clayton Calabrese ]
+  * cause trx_generators to exit upon sigint, handle log checking inside of finally, so that even early exits get analyzed, print new line in json to indicate if run exited early or not
+
+  [ Peter Oschwald ]
+  * Update tests/performance_tests/log_reader.py
+
+  [ ClaytonCalabrese ]
+  * Add space for formatting in launch_transaction_generators.py
+
+  [ Clayton Calabrese ]
+  * lower expectations for performance_test_basic in CI
+
+  [ Kevin Heifner ]
+  * Mandel-301 Fix replay to correctly add needed trxs into the de-dup list
+
+  [ Chris Gundlach ]
+  * added prometheus library
+  * updated prometheus_plugin to be dependent on prometheus library
+  * took out cmake cruft
+  * removed PROMETHEUS_INSTALL_COMPONENT
+
+  [ Clayton Calabrese ]
+  * allow node specific customization of logging levels via cluster
+  * adjust test expectations until missing transactions are resolved.
+  * revert expectations change due for performance_test_basic, as it was already handled in cmake
+
+  [ Peter Oschwald ]
+  * Log trx provider's sent transactions and timestamps to new log directory.
+  * Calculate trx latency stats.
+  * Address peer review comments.
+  * Peer review comments.
+  * Don't log all the transactions if not found. Simply notify of total.
+  * Log total trx sent when reporting number lost
+
+  [ Clayton Calabrese ]
+  * adress pr comments to change how space stripping works, and give an example for logging-level-map in help.
+
+  [ Matt Witherspoon ]
+  * remove login_plugin
+
+  [ Peter Oschwald ]
+  * Updates to better structure log dirs and make compatible with read_log_data.py
+  * Remove sleep. Vestige of earlier dev testing.
+  * Move canonical handling of logs to calculate stats and create a performance report into one location in log_reader.py.
+  * Calculatue trx cpu and net stats and add to report.
+  * Rework performance_test_basic.py to work as an import module and as a script.
+
+  [ Lin Huang ]
+  * merge version bump of 3.2.0-rc1
+
+  [ Clayton Calabrese ]
+  * print some additional parameters in performance harness
+
+  [ Peter Oschwald ]
+  * Fix up formatting to break up long lines.
+
+  [ Matt Witherspoon ]
+  * remove YubiHSM support from keosd
+  * remove global OPENSSL_API_COMPAT & OPENSSL_NO_DEPRECATED defs
+
+  [ Chris Gundlach ]
+  * added prometheus-cpp as submodule
+  * removed ported files
+  * added prometheus-cpp files to prometheus-core lib
+  * updated prometheus_plugin not to use submodule library version
+
+  [ Peter Oschwald ]
+  * Add performance_test.py to run performance basic test scenarios to determine max TPS and report results.
+
+  [ Clayton Calabrese ]
+  * Add function that takes a list of transactions and examines a number of blocks to find those transactions.
+
+  [ Peter Oschwald ]
+  * Updates from peer review.
+  * Fix log dir cleanup to honor save json reports.
+  * Fix edge case in search algorithm causing infinite test loop.
+  * Report env and nodeos version.
+
+  [ Clayton Calabrese ]
+  * remove uncessecary imports from log_reader.py
+  * update waitOnBlockTransactions based off PR feedback. Fix a number of bugs in it.
+
+  [ Peter Oschwald ]
+  * Cleanup & Organized imports and from imports.
+
+  [ Jonathan Giszczak ]
+  * Add data classes, populators, and topology generators
+
+  [ Chris Gundlach ]
+  * added pull functionality
+
+  [ Kevin Heifner ]
+  * GH-191 Store initial chain state on startup if chain state log is empty.
+
+  [ Jonathan Giszczak ]
+  * Revert to generic python3 in shebang.
+
+  [ Clayton Calabrese ]
+  * rename some variables so that waitForTransactionsInBlockRange reads easier
+
+  [ Peter Oschwald ]
+  * Address peer review comments. Use local helper functions to alleviate need for duplicate code.
+  * Address peer review comment. Use dictionary comprehension.
+
+  [ Clayton Calabrese ]
+  * refactor maxFutureBlocks in waitForTransactionsInBlockRange
+
+  [ Peter Oschwald ]
+  * Simplify loop condition as well as fixup binary search algorithm a bit.
+  * Use standard library function to same effect.
+  * Begin to document Performance Harness in README
+  * Additional details and clarifications.
+  * Added Transaction Generator README
+  * Addressing peer review comments.
+  * Addressing peer review comments.
+  * Update build and test instructions in README for additional python dependencies for Performance Harness.
+  * Addressing additional peer review comments.
+  * Add start and end times to test reports.
+  * Add option to quiet reporting from performance tests.
+
+  [ Chris Gundlach ]
+  * refactored based on review comments
+  * fix problem where empty string was returned; made stats its own struct
+
+  [ Jonathan Giszczak ]
+  * Add additional command line arguments to support custom config dir
+
+  [ Zach Butler ]
+  * Update permalinks in docs to point at main
+  * Remove libcurl from list of dependencies, it was not mentioned on main
+  * Remove libusb from dependencies, it was not included here
+  * Remove pkg-config, it was also not here
+
+  [ Lin Huang ]
+  * update libfc path in EosioTesterBuild.cmake.in for building tests in CDT and System Contracts
+
+  [ Zach Butler ]
+  * Fix missing quotes
+
+  [ Peter Oschwald ]
+  * Add feature to enable/disable trace_api_plugin on producer nodes.
+  * Fix spelling.
+  * Fix loggingDict to be an instance field.
+  * Update boolean command line arguments to use add_bool.
+  * Use dict (report) and datetime (testStart, testFinish) types as long as possible. Only convert to str or json at the last moment when required.
+  * Define the node id for the validation node in the test to reuse throughout.
+  * Use same time for testStart and timestamp for test logs dir.
+  * Use same time for testStart and timestamp for test logs dir.
+  * Fix initialization of node ids to be earlier for use in create accounts.
+  * Update docs for new feature arguments.
+
+  [ Jonathan Giszczak ]
+  * Assign network port numbers correctly.
+
+  [ Peter Oschwald ]
+  * Update to dynamically calculate validation node id.
+  * Correct documentation on transfers.
+  * Correct documentation and help strings to correctly identify keosd.
+  * Update default test durations to something higher for more reasonable block count to analyze
+  * Include testAnalysisBlockCnt in search scenario summary.
+  * Performance Test Long Duration Tests now use linearly decrementing search instead of binary search.
+  * For initial binary search, try a short run using ceiling tps first.
+  * Re-order items in report to be more in line with how one would read them.
+
+  [ Jonathan Giszczak ]
+  * Add bind nodes to new Pythonic make_line()
+
+  [ Peter Oschwald ]
+  * Add argument --del-perf-logs to control perf harness log lifetime.
+
+  [ Jonathan Giszczak ]
+  * Interpret total nodes as per C++ version.
+
+  [ Peter Oschwald ]
+  * Dynamically determine the location of the validation node's log file.
+  * Capture low level artifacts into performance test log directories.
+  * Default to saving test reports.
+
+  [ Clayton Calabrese ]
+  * change from wait for empty blocks to waiting for generated transactions in performance test basic
+  * fix a bug in waitForTransactionsInBlockRange when None is the wait
+
+  [ Peter Oschwald ]
+  * Fix conflicting needs for low level logs.
+  * Begin refactoring launch_transaction_generators.py into an import module.
+  * Make use of import module to launch trx generators.
+
+  [ Clayton Calabrese ]
+  * address peer feedback on performance test wait for trx
+
+  [ Jonathan Giszczak ]
+  * Fix mesh topology generator and eliminate redundant links.
+
+  [ Huang-Ming Huang ]
+  * update to use bn256
+
+  [ Matt Witherspoon ]
+  * don't triage new issues if they're already assigned to a project
+
+  [ Peter Oschwald ]
+  * Remove unused function.
+  * Factor out TpsTrxGensConfig to allow numGenerators and list of each generator's tps target to be used for launching and populating in report.
+  * Address peer review comments.
+
+  [ Huang-Ming Huang ]
+  * Update eos-vm
+
+  [ Kevin Heifner ]
+  * GH-271 WIP Removed db_read_modes SPECULATIVE and READ_ONLY. Added new block_status type ephemeral to distinguish between a block being produced which should not roll-back state and a block only created for speculative trx execution. Renamed is_producing_block to is_speculative_block as producing implies too much.
+  * GH-271 Update docs for removal of read-mode speculative and read-only
+  * GH-271 Update tests for removal of read-mode speculative
+  * GH-271 Check for ephemeral case and use is_speculative_block for better documentation
+
+  [ Huang-Ming Huang ]
+  * update bn256
+  * Fix alt_bn128_pair
+
+  [ Kevin Heifner ]
+  * GH-271 Temporary fix until python regression test framework removes this file which is already in work.
+  * GH-271 Add wait for blocks as transactions are no longer persisted by default.
+  * GH-271 Increase timeout and turn on debug output.
+
+  [ Huang-Ming Huang ]
+  * replace benchmark alt_bn128
+
+  [ Kevin Heifner ]
+  * GH-271 Hardcode disable-api-persisted-trx=true for now, will be removed soon.
+
+  [ Huang-Ming Huang ]
+  * fix alt_bn128_add
+
+  [ Kevin Heifner ]
+  * GH-271 Remove disable-api-persisted-trx option, functionality will be removed soon.
+  * GH-271 Add wait for block
+  * GH-271 Dump error details too much logging for high transaction test
+
+  [ Henrik Hautakoski ]
+  * package.cmake: Packages in the "CPACK_DEBIAN_DEV_PACKAGE_DEPENDS" variable should be separated by commas and not semicolon.
+
+  [ Kevin Heifner ]
+  * GH-271 Keep trx metas in pending so abort puts them in unapplied queue.
+  * GH-271 Remove persist until expired functionality
+
+  [ Jonathan Giszczak ]
+  * Write a genesis file for each node.
+  * Support max-[block,transaction]-cpu-usage when writing genesis.json
+
+  [ Chris Gundlach ]
+  * added definition for runtime_metrics
+  * added handling of runtime_metrics from net plugin
+  * added num_clients/num_peers metrics
+  * update runtime_metric to int64_t; added aliases
+  * used new alias
+
+  [ Matt Witherspoon ]
+  * bump abieos submod to version with ARM float JSON string workaround
+  * bump abieos submod to main with ARM float JSON string workaround
+
+  [ Clayton Calabrese ]
+  * replace usage of curl in python with urllib
+
+  [ Huang-Ming Huang ]
+  * change cleos to use libcurl
+
+  [ Kevin Heifner ]
+  * GH-271 Update comment to be clearer and not reference speculative mode which no longer exists.
+
+  [ Huang-Ming Huang ]
+  * fix test failures
+  * address PR comments
+  * fix make_scoped_exit
+  * increase trace_plugin_test timeout
+
+  [ Peter Oschwald ]
+  * Add support for additional producer configuration.
+  * Update documentation for updates to launch transaction generators script.
+
+  [ Huang-Ming Huang ]
+  * enable http connection resuse
+
+  [ Jonathan Giszczak ]
+  * Support using an existing genesis.json file.
+
+  [ Peter Oschwald ]
+  * Consolidate some of the arguments to log_reader.py's calcAndReport
+
+  [ Huang-Ming Huang ]
+  * increase trx_finality_status_test timeout
+
+  [ Jonathan Giszczak ]
+  * Move launcher.py out of TestHarness.
+  * Use cleos to generate unique producer keys for non-bios producer nodes
+
+  [ Peter Oschwald ]
+  * Update to use disable-subjective-billing.
+
+  [ Chris Gundlach ]
+  * updated to net_plugin to return a struct rather than a vector of pointers
+  * changed to use references rather than pointers
+  * added dropped trxs metric
+
+  [ Scott Bailey ]
+  * Update submodules with wall-fix changes.
+  * Improve ignore for '[Bb]uild*/' directories and ignore QtCreator user files.
+  * Add warning options: ENABLE_WMAX, ENABLE_WERROR, ENABLE_WEXTRA.
+  * Include system libraries with SYSTEM keyword to remove included warnings.
+  * Remove warnings.
+
+  [ Huang-Ming Huang ]
+  * disable Expect 100-Continue header
+
+  [ 766C6164 ]
+  * Added snapshot subcommand
+  * Adjusted help texts
+
+  [ Scott Bailey ]
+  * Address review comments.
+
+  [ Kevin Heifner ]
+  * GH-271 Additional info to comments.
+
+  [ Scott Bailey ]
+  * Review comment correction.
+
+  [ 766C6164 ]
+  * Multiple updates
+  * Fixes
+
+  [ Matt Witherspoon ]
+  * remove platform root CA population for TLS connections
+
+  [ Huang-Ming Huang ]
+  * restore connection refused message
+  * fix cli_test.py
+
+  [ Peter Oschwald ]
+  * Remove --dump-error-detail option now that logs are automatically collected during CICD runs.
+
+  [ Huang-Ming Huang ]
+  * more change to connection error message
+
+  [ Peter Oschwald ]
+  * Fix links to test report sections.
+  * Fix links to Build and Install From Source directions.
+  * Fix indentation.
+  * Collapse example directory structure.
+
+  [ Clayton Calabrese ]
+  * fix problem in http_api_test where incorrect command and args were being used.
+  * revert change of defaulting for SilentErrors.
+  * Change txn_test_gen_plugin to send a response when no problems occur in push_next_transaction due to it causing errors when using urllib
+
+  [ Huang-Ming Huang ]
+  * don't show detail exception
+
+  [ Clayton Calabrese ]
+  * fix test failures
+
+  [ Jonathan Giszczak ]
+  * Migrate chain queries out of Node.py into their own class
+
+  [ Clayton Calabrese ]
+  * revert reversion of new default.
+
+  [ Huang-Ming Huang ]
+  * address PR comments
+  * remove easy handle map
+  * remove ff submodule
+
+  [ Jonathan Giszczak ]
+  * Add missing imports.
+  * Move chain transactions API out of Node into its own class.
+
+  [ Clayton Calabrese ]
+  * return the http retcode as well as the payload in processurllibrequest
+  * fix test failures as a result of return type changing for json in processUrlLibRequest
+  * fix another test failure
+
+  [ Jonathan Giszczak ]
+  * Redirect naughty usage of Python 'private' method in cli_test
+  * Move wait methods back to Node.
+
+  [ Huang-Ming Huang ]
+  * fix find gmp
+  * fix gcc8 compile problem
+  * address PR comments
+
+  [ MaximSmolskiy ]
+  * Remove --dump-error-details from all tests in tests/CMakeLists.txt
+
+  [ Clayton Calabrese ]
+  * convert some strings to fstring. Fix indenting on multi-line blocks.
+
+  [ Matt Witherspoon ]
+  * resolve 'path' ambiguous overload in boost 1.81
+  * boost::beast::string_view no longer has to_string() in boost 1.81
+
+  [ 766C6164 ]
+  * Use cli11 as submodule
+
+  [ Clayton Calabrese ]
+  * convert hardcoded use of var lib to a dynamic one based off test name.
+
+  [ Chris Gundlach ]
+  * added ability to set content type on api
+  * set content type for prometheus_plugin to plain text
+  * took out unnecessary content_type_ member
+  * changed url from /scrape to /metrics, which is default for prometheus
+
+  [ Peter Oschwald ]
+  * Add support for configuring number of worker threads in controller thread pool (--chain-threads).
+  * Add support for configuring number of worker threads in net_plugin thread pool (--net-threads).
+  * Add support for configuring number of worker threads in producer thread pool (--producer-threads).
+  * Add argument to configure --chain-state-db-size-mb and default to 10GB
+  * Update docs for new argument.
+  * Update docs for new arguments.
+  * Rename to simplify and shorten plugin argument classes.
+  * Refactor to use __str__ function override.
+  * Add argument to configure --database-map-mode.
+  * Update docs for new argument
+  * Add cpu count to top level report.
+  * Add target tps number to test log dir name for ease of locating specific run.
+  * Fix detection of trx generator failing.
+  * Attempt to lower trx gen limit for cicd ubuntu 18 machine.
+
+  [ Lin Huang ]
+  * clean up compute_transaction: replace read_only flag with dry_run, refactor trx_type in transaction_metadata and transaction_context
+
+  [ Peter Oschwald ]
+  * Remove argument to disable resmon shutdown.
+  * Rename to PerformanceTestBasic to better align with script names.
+  * Factor out test params into PtbConfig and LoggingConfig objects.
+
+  [ Guillaume Babin-Tremblay ]
+  * Removed unused files. Moved byteswap.hpp from src/ to include/fc/ and updated include references.
+  * Removed unused files. Moved byteswap.hpp from src/ to include/fc/ and updated include references.
+  * Removed commented files from libraries/libfc/CMakeLists.txt
+
+  [ Chris Gundlach ]
+  * added metric_type
+  * added chain_plugin metrics
+  * added metric types to metrics
+  * added producer_plugin metrics
+  * added support for metric_type
+
+  [ Lin Huang ]
+  * remove unnecessary const return type and correct an indentation
+
+  [ Peter Oschwald ]
+  * Factor PerformanceTest out into its own class.
+
+  [ Matt Witherspoon ]
+  * add libcurl to README build instructions
+
+  [ Michal Lesiak ]
+  * Fix undefined behavior - uninitialized variables revealed by valgrind
+  * Code review fix.
+  * Revert "Code review fix."
+  * Code review fixes.
+
+  [ Peter Oschwald ]
+  * Add options to calculate recommended producer, chain, and net worker thread pool size.
+  * Update defaults for producer threads to 6 and chain threads to 3 based on performance run calculations.
+  * Fix typo.
+
+  [ Lin Huang ]
+  * fixed broken cleos due to reuse of curl handle
+  * Keep curl handle as a static for performance and unset CURLOPT_UNIX_SOCKET_PATH for non-unix-domain request
+
+  [ Clayton Calabrese ]
+  * Remove try catch which aren't doing anything besides throwing
+
+  [ Peter Oschwald ]
+  * Fix check for thread calc being 'none'
+  * Fix reference before assignment error on results objects when not configured to run tests.
+
+  [ Clayton Calabrese ]
+  * resolve collision in test path for tests which are run multiple times
+  * merge from main
+
+  [ Peter Oschwald ]
+  * Make use of ArgumentParser parents and groups.
+  * Don't print Application Specific Arguments group if there are none.
+  * Clarify TPS Test Config is part of Performance Harness.
+  * Fix performance_test_basic.py parser.
+
+  [ Clayton Calabrese ]
+  * add new paths for GHA error logs
+
+  [ Kevin Heifner ]
+  * GH-268 Update nodeos_snapshot_diff_test.py to use leap-util
+  * GH-521 Move initialize_protocol_features functionality out of chain_plugin into protocol_feature_manager so it can be used by both chain_plugin and leap-util snapshot. This fixes issue with leap-util snapshot not being able to read snapshots with protocol features activated.
+  * GH-268 Remove unneeded --dump-error-detail
+
+  [ Peter Oschwald ]
+  * Use Python introspection to simplify.
+  * Use encoder to handle datetime and None type conversions for reporting.
+  * Update response order and truncate when printing.
+  * GH-523 Decrease min trx expectations in test to allow to run in nonparallelizable_tests env.
+  * Remove redundant calls to close when using with statement.
+  * Resuse encoder from log_reader.
+  * GH-523 Revert change to transPerPeriod.  Fix steady state avg calculation.
+  * GH-523 Add small amount of leeway in expectation.
+  * GH-523 Fix assert to be greater than or equal for correctness.
+  * GH-523 Roll fixes to steady state average calculation with leeway forward to other test using same logic.
+
+  [ Clayton Calabrese ]
+  * resolve test failures due to use of var
+
+  [ Peter Oschwald ]
+  * Decrease tps-limit-per-generator for lower performance vms in CI/CD
+  * Decrease perf expectations for lower performing vms in CI/CD
+  * Decrease perf expectations for lower performing vms in CI/CD
+  * Decrease perf expectations for lower performing vms in CI/CD
+  * Decrease tps-limit-per-generator for lower performance vms in CI/CD
+  * Decrease target tps for lower performance vms in CI/CD
+
+  [ Chris Gundlach ]
+  * changes based on pr comments
+
+  [ Clayton Calabrese ]
+  * fix incorrect list in github actions
+  * address pr comment regarding github actions log path
+
+  [ Lin Huang ]
+  * Fixed test harness crash when actiob_traces is empty
+  * move except check before adding action_traces
+
+  [ Chris Gundlach ]
+  * fixes based on pr comments
+
+  [ Huang-Ming Huang ]
+  * update bn256 and tester dependency
+  * refactor block_log_impl
+  * bug fixes
+
+  [ Chris Gundlach ]
+  * added base metrics for producer_plugin
+
+  [ Jonathan Giszczak ]
+  * Launch nodeos instances per configuration, unsharing the network first.
+
+  [ Kevin Heifner ]
+  * Handle shutdown of http_plugin lifetime
+
+  [ Huang-Ming Huang ]
+  * add split-blocks and merge blocks option to leap-util
+
+  [ Peter Oschwald ]
+  * Provide *PluginArgs dataclasses to capture and validate nodeos config options.
+
+  [ Clayton Calabrese ]
+  * fix nodeos_run_remote_test failing on nodeos_run_test log check step
+
+  [ Peter Oschwald ]
+  * Fixup some of the config options.
+  * Script that generates *PluginArgs.py dataclass files from nodeos --help output.
+  * Fixup invalid syntax error.
+  * Fixup generator for proper quote detection and selection.
+  * Make CI/CD performance_test_basic run less perfomance and more unit test.
+  * Provide BasePluginArgs base class.
+  * Remove threads setter function and use setattr instead.
+  * Remove cruft.
+  * Create NodeosPluginArgs python package
+  * Fix imports.
+  * Fix module name.
+
+  [ Huang-Ming Huang ]
+  * fix bn256 installation
+
+  [ Peter Oschwald ]
+  * Remove redundant paths in CMake files.
+  * Add purpose and limitations statement to generation script.
+  * Add suggestion to regen classes if test fails due to updated nodeos config options.
+
+  [ jgiszczak ]
+  * Fix typos and formatting.
+
+  [ Kevin Heifner ]
+  * GH-230 cleanup exception handling
+  * GH-230 Use very large deadline for keosd http response time
+
+  [ 766C6164 ]
+  * Use inherited option vs duplicating it
+
+  [ Lin Huang ]
+  * implement read-only transaction
+  * check in missing read_only_trx_test.py
+  * check in missing read_only_trx_tests.cpp
+
+  [ Clayton Calabrese ]
+  * Remove hardcoded test names in favor of __file__. Remove .py from path.
+
+  [ Lin Huang ]
+  * Fix a compile error on Ubuntu 22, do not use designated initializers on non-aggregate types
+  * restructure unit tests so they are modularized
+
+  [ Jonathan Giszczak ]
+  * Find loopback interface and bring it up in the launch namespace
+
+  [ Lin Huang ]
+  * Refactor cleos main and chain_plugin to remove duplicate code
+  * do not check authorization for read-only transactions; do not allow canceldelay
+  * restructure transaction init and finalize; add is_transient() to simplify code, do not allow non-zero delay_sec; do not do validate_expiration and validate_tapo; add back elapsed and net_usage to trace
+  * Do not undo_session for read-only transaction, prevent chainbase read_only_mode from stuck, add more unit tests
+
+  [ Kevin Heifner ]
+  * GH-329 Include subjective cpu limit in trx deadline
+
+  [ Lin Huang ]
+  * revert the changes for elpased and net_usage for non-read-only transactions; add tests for elpased and net_usage for read-only transactions
+  * use make_scoped_exit to protect chainbase from being stuck in read_only_mode
+
+  [ Chris Gundlach ]
+  * changed to use const refs and other pr changes
+  * cleanup in chain an net plugins based on changes in producer plugin
+
+  [ greg7mdp ]
+  * consistent management of in_flight bytes, incl. through `http::async_write` call
+  * Address Kevin's remark to avoid copy, and fix a mistaken change
+  * Remove overly complicated in_flight struct and manage in_flight_bytes directly and consistently.
+  * address some if Kevin's code review remarks
+  * Additional changes after talking with Kevin
+  * fix whitespace
+
+  [ Jonathan Giszczak ]
+  * Use kernel call directly to bring up namespaced loopback interface
+
+  [ greg7mdp ]
+  * address Lin's code review remarks
+
+  [ Lin Huang ]
+  * finish changeing is_read_only() to is_transient() for deep-mind logging
+
+  [ Chris Gundlach ]
+  * code reformat / added bool for collecting of metrics
+
+  [ Lin Huang ]
+  * use is_transient in producer_plugin; refine unit tests
+
+  [ Clayton Calabrese ]
+  * enable compatibility for 2_0 and 2_1 nodeos on performance tests.
+  * remove unused and unneeded cl option for old nodeos
+  * rename oldNodeos to isNodeosv2 to improve clarity
+  * replace use of os.path with pathlib's Path and PurePath
+
+  [ Kevin Heifner ]
+  * GH-525 Make forkdb thread-safe
+
+  [ Chris Gundlach ]
+  * added enabled for metrics
+
+  [ Kevin Heifner ]
+  * GH-525 Remove unused block channel.
+  * GH-525 Move scope_exit of schedule_production_loop since any call should restart block because speculative block may have been interrupted.
+  * GH-525 Use shared_mutex to allow multiple readers
+
+  [ Clayton Calabrese ]
+  * address pr comments to make old nodeos code more efficient
+
+  [ greg7mdp ]
+  * use state_dir() which can now be configured
+  * Revert "update submodule appbase"
+  * Move `state-dir` config from appbase to chain_plugin
+  * Restore using default state dir name from config
+  * commit appbase change revert, and remove outdated referece in modeos/main.cpp
+  * update appbase
+
+  [ Kevin Heifner ]
+  * GH-525 Only interrupt start_block for validated block_header.
+
+  [ Clayton Calabrese ]
+  * change isNodeosV2 name and from bool to enum. Conver to use postinit handling for functions
+
+  [ Huang-Ming Huang ]
+  * remove libff based test case
+
+  [ Kevin Heifner ]
+  * Set launched keosd timeout to effectively unlimited
+  * Better output on errors
+
+  [ Huang-Ming Huang ]
+  * reduce ship memory usage
+
+  [ Clayton Calabrese ]
+  * address futureproof issues by converting nodeosVers from enum to string. Assert that an unsupport nodeos is not being used. Reduce code.
+
+  [ Lin Huang ]
+  * bump chainbase version to main which contains final changes for read-only transactions support
+
+  [ Kevin Heifner ]
+  * Fix warnings
+
+  [ Huang-Ming Huang ]
+  * address PR comment
+
+  [ Chris Gundlach ]
+  * added base struct for plugin metrics
+
+  [ Huang-Ming Huang ]
+  * Suport hole punching with lock
+  * use regular mutex for prune mutex
+
+  [ greg7mdp ]
+  * revert to main branch of submodule appbase
+  * revert to previous appbase version
+
+  [ Kevin Heifner ]
+  * GH-330 WIP: Add additional information to tx_cpu_usage_exceeded exception messages
+  * GH-330 Estimated account limit is always account
+  * GH-330 Add test for reached speculative executed adjusted trx max time
+
+  [ Huang-Ming Huang ]
+  * Fix input check
+
+  [ Kevin Heifner ]
+  * GH-330 Report reached account cpu limit
+
+  [ 766C6164 ]
+  * Removed commented out line
+
+  [ Kevin Heifner ]
+  * GH-551 Remove subjective billing support for speculative blocks since speculative read-mode was removed via GH-414.
+  * GH-551 Subjectively bill for failures when producing
+
+  [ Clayton Calabrese ]
+  *  convert additional string paths to pathLike objects
+
+  [ greg7mdp ]
+  * Add unit test for `state-dir` option configuration
+
+  [ Clayton Calabrese ]
+  * fix some problems with pathLike changes
+
+  [ Huang-Ming Huang ]
+  * address PR comments
+
+  [ greg7mdp ]
+  * Undo change to fix warning unrelated to this PR.
+  * Undo whitespace change
+
+  [ Huang-Ming Huang ]
+  * fix counter overflow problem
+
+  [ greg7mdp ]
+  * Use `fc::temp_directory` to alleviate the need to do manual cleanup
+
+  [ Lin Huang ]
+  * fix a merge from main error
+
+  [ Huang-Ming Huang ]
+  * add 4GB test case
+
+  [ Kevin Heifner ]
+  * GH-568 Remove unused zipkin calls.
+  * GH-568 Cleanup and optimize peer block tracking
+
+  [ Clayton Calabrese ]
+  * convert log reader tests to use pathlike objects)
+  * remove unused import
+  * remove more unused imports
+
+  [ Kevin Heifner ]
+  * GH-568 Broadcast block after validating block header instead of after full validation of the block.
+
+  [ Huang-Ming Huang ]
+  * add tests for invalid input length
+
+  [ Lin Huang ]
+  * fix merge error, do not enforce block_cpu_limit or on-chain max_transaction_cpu_usage for read-only transactions
+
+  [ Kevin Heifner ]
+  * GH-568 If after full validation block is unlinkable then mark as not received so it can be processed when valid later.
+
+  [ Jonathan Giszczak ]
+  * Use launcher.py for tests.
+  * Invoke launcher.py with generic python interpreter name.
+
+  [ Eric Passmore ]
+  * added defaults
+  * updated document meta-tag to version 4.0
+
+  [ Jonathan Giszczak ]
+  * Maybe fix YAML syntax.
+  * Maybe fix YAML syntax.
+
+  [ Lin Huang ]
+  * remove duplicate code from merging, improve deadline calculation for read-only transactions
+
+  [ Jonathan Giszczak ]
+  * Proliferate privileged option to more configurations.
+  * Maybe fix YAML syntax.
+
+  [ Huang-Ming Huang ]
+  * add smaller cases
+
+  [ Kevin Heifner ]
+  * GH-568 Handle case of close of connection after recording of peer block id.
+  * GH-568 Optimize bcast_block by removing need for conn_mtx.
+
+  [ Huang-Ming Huang ]
+  * address PR comments
+
+  [ 766C6164 ]
+  * Bumped cli11 sub
+
+  [ Huang-Ming Huang ]
+  * remove unused code
+
+  [ Kevin Heifner ]
+  * Fix for mulit-producer run of performance test
+
+  [ Huang-Ming Huang ]
+  * move session.hpp
+
+  [ Kevin Heifner ]
+  * GH-330 Take by value and move
+  * GH-330 Minor perf improvements and cleanup
+
+  [ Lin Huang ]
+  * honor block_deadline, set deadline_exception_code, and split a large if statement
+
+  [ Kevin Heifner ]
+  * GH-551 Minor cleanup
+
+  [ Jonathan Giszczak ]
+  * Maybe fix YAML syntax.
+  * Maybe fix YAML syntax.
+  * Maybe fix YAML syntax.
+
+  [ Kevin Heifner ]
+  * GH-568 Do not send handshake to peer when dropping a block do to block received during block production
+
+  [ Jonathan Giszczak ]
+  * Support nodeos-log_path argument and non-producing nodes.
+
+  [ 766C6164 ]
+  * Switched to require_subcommand() which is 1 or more
+
+  [ Huang-Ming Huang ]
+  * add log catalog files
+  * add ro_stream_for_block overload
+  * add ship log partition options
+
+  [ Luis ]
+  * update chain plugin options (main) :doc
+  * update http plugin options (main) :doc
+  * update producer plugin options (main) :doc
+  * update state history plugin options (main) :doc
+  * update txn_test_gen plugin options :doc
+
+  [ Clayton Calabrese ]
+  * replace repeated path calls with concatonated strings using / operator from path
+  * more path to string changes
+  * more changes to using specified contracts in performance tests.
+
+  [ Huang-Ming Huang ]
+  * fix truncate
+
+  [ Lin Huang ]
+  * Add configurable max-read-only-transaction-time; add node_configured_max_read_only_transaction_time for tx_cpu_usage_exceeded_reason
+
+  [ Huang-Ming Huang ]
+  * fix issue #592
+
+  [ Lin Huang ]
+  * Add transaction execution mode to controller for better managing dry-run and read-only transactions
+  * simplify and streamline deep-mind logging for dry-run and read-only transactions
+
+  [ Kevin Heifner ]
+  * GH-568 Post block processing to dispatcher strand so that only one thread is doing block header validation at a time.
+  * GH-260 Add is_code_cached method to wasm_interface and use in api_tests.
+
+  [ Huang-Ming Huang ]
+  * fix ship threaded write
+  * remove ff
+
+  [ greg7mdp ]
+  * Add timer on http listener to avoid fast looping on accept
+
+  [ Huang-Ming Huang ]
+  * revert commit for threaded write
+
+  [ greg7mdp ]
+  * Remove outdated comment
+
+  [ Kevin Heifner ]
+  * GH-260 Additional uses of is_code_cached
+  * GH-568 Remove unused zipkin support
+
+  [ Lin Huang ]
+  * add test for max_read_only_transaction_time deadline exception
+
+  [ Kevin Heifner ]
+  * GH-570 cleos v2 does not have --time-limit option
+
+  [ Clayton Calabrese ]
+  * resolve failures for 2.0 following merge.
+
+  [ greg7mdp ]
+  * Implement some suggestions from the code reviews.
+
+  [ Clayton Calabrese ]
+  * update NodeosPluginArgs to match addition of --state-dir
+
+  [ Kevin Heifner ]
+  * GH-54 Move eosio.bios to libraries/testing and provide ability to build it from source
+  * GH-54 Remove mostly unused CORE_SYM_STR and just use CORE_SYMBOL_NAME
+  * GH-54 Missed a few locations where python tests refer to old eosio.bios contract
+  * Revert "GH-54 Remove mostly unused CORE_SYM_STR and just use CORE_SYMBOL_NAME"
+  * GH-54 Remove mostly unused CORE_SYM_STR and just use CORE_SYMBOL
+  * GH-54 Move snapshot_suites out of libraries/testing as it is not needed for libraries/testing
+
+  [ Matt Witherspoon ]
+  * fix spelling of "parameters"
+
+  [ Jonathan Giszczak ]
+  * Manually add `--privileged` flag to minified javascript.
+
+  [ Kevin Heifner ]
+  * GH-54 Split contracts.cpp.in for libraries/testing and unittests. Remove dependency of libraries/testing on unittests.
+  * GH-54 Add comment
+  * GH-54 Remove moved test_chain_plugin test
+  * GH-54 eosio.token contract moved to libraries/testing/contracts from unitests/contracts
+  * GH-54 eosio.token contract moved to libraries/testing/contracts from unitests/contracts
+
+  [ greg7mdp ]
+  * Use the single argument ctor as suggested in the review.
+
+  [ Clayton Calabrese ]
+  * rework custom contract activation in performance harness
+  * remove unnecessary new lines
+
+  [ Kevin Heifner ]
+  * GH-54 Remove call to set_parameters_packed as many tests assume that its protocol feature has not been activated.
+  * GH-54 Add contract code for eosio.msig, eosio.system, eosio.wrap. Update contract code for eosio.bios and eosio.token to match as close as possible what matches the existing abi/wasm.
+  * GH-54 Copy over abi/wasm compiled with latest Antelope CDT 3.2.0-dev ea6d926c3d2e9fa37dd513b8a946d8283b1aa233
+
+  [ Jonathan Giszczak ]
+  * Run db_modes_test with verbose flag.
+  * Move --privileged to test runner command, from template.
+
+  [ Lin Huang ]
+  * improve max-read-only-transaction-time description, fix a comment typo, and do not use _max_read_only_transaction_time_ms as it is not thread-safe when called from net plugin
+
+  [ Kevin Heifner ]
+  * GH-260 Fix return type
+
+  [ Lin Huang ]
+  * do not perform key recovery if there are no signatures
+
+  [ 766C6164 ]
+  * Included additional comments to generic template
+
+  [ Clayton Calabrese ]
+  * report forks and forked blocks in performance harness
+  * revert unintended change made to get logs for testing.
+  * add a +1 to how many forked blocks are logged
+
+  [ 766C6164 ]
+  * Added fallthrough option to other subcommands
+
+  [ Lin Huang ]
+  * rework to make sure deep-mind loggins is not generated for dry-run and read-only transactions
+  * revert the trx_execution_mode changes
+  * use single get_deep_mind_logger method from control and pass trx_is_transient directly to indicate doing deep mind logging or not
+  * completely review deep mind logging to make sure no deep mind logging for dry-run or read-only transactions
+
+  [ Peter Oschwald ]
+  * Trx Generator config support for JSON transaction description
+  * Add action_name, action_data, and abi_file argument support.
+
+  [ 766C6164 ]
+  * Added snapshot scheduling calls to schema
+
+  [ Kevin Heifner ]
+  * GH-592 Merge GH-624 changes into split-ship-log branch.
+  * GH-592 Debug log for request messages.
+
+  [ Jonathan Giszczak ]
+  * Add support for specifying paths to nodeos in launcher.
+
+  [ Kevin Heifner ]
+  * Update abieos to head of main
+
+  [ Clayton Calabrese ]
+  * use explicit names on constructor for specified contract
+
+  [ Kevin Heifner ]
+  * Add handling of exceptions to named_thread_pool
+
+  [ greg7mdp ]
+  * Revert to earlier implementation based on Matt's feedback.
+
+  [ Kevin Heifner ]
+  * Add ability to delay start of thread pool
+
+  [ 766C6164 ]
+  * Updates to snapshot scheduling api
+
+  [ Kevin Heifner ]
+  * Added tests and fixed issue with ioc needing restart()
+
+  [ Peter Oschwald ]
+  * Remove txn_test_gen_plugin from test as it was not being used.
+  * Replace txn_test_gen_plugin with trx_generator in test.
+
+  [ Clayton Calabrese ]
+  * log production windows, dropped blocks, and dropped transactions in performance harness
+
+  [ Jonathan Giszczak ]
+  * Try unconfined seccomp rather than --privileged test execution.
+
+  [ Peter Oschwald ]
+  * Replace txn_test_gen_plugin with trx_generator in test.
+
+  [ Jonathan Giszczak ]
+  * Revise NP and LR tests with seccomp=unconfined instead of privileged
+
+  [ Clayton Calabrese ]
+  * change production window size to constant
+
+  [ Peter Oschwald ]
+  * Fix usage of multiple trx generators by allowing enough connections.
+  * Use multiple trx generators to more closely mirror existing behavior.
+
+  [ Clayton Calabrese ]
+  * more explicit constructor names
+
+  [ Jonathan Giszczak ]
+  * Python alias no present; use python3 alias.
+
+  [ Peter Oschwald ]
+  * Add support for setting peer endpoint and port in trx generator.
+  * Update test to use txn generator.
+  * Remove txn_test_gen_plugin.
+
+  [ Jonathan Giszczak ]
+  * Honor launch = 'none' and delay arguments.
+
+  [ Peter Oschwald ]
+  * Rename for clarity as this is not a string.
+  * Refactor user defined trx data into easily modifiable dataclass UserTrxData.
+  * Refactor common transaction generator code into base class.
+  * Remove UserTrxData in favor of loading user data from json file.
+  * Replace cout in favor of xlog statements.
+
+  [ Chris Gundlach ]
+  * first cut at new interface between prometheus and other plugins
+
+  [ Peter Oschwald ]
+  * Peer review comment. Resolve IPv4 addresses for p2p plugin.
+  * Create launchTrxGenerators helper in Node.py.
+
+  [ Kevin Heifner ]
+  * GH-592 Start thread after listen
+  * GH-592 Remove unused code
+  * GH-54 Now that txn_test_gen_plugin has been removed eosio.token can move back into ./unittests/contracts and ./libraries/testing/CMakeLists.txt can go back to eosio_testing_contracts being INTERFACE only.
+  * GH-54 Update eosio.token contract location
+
+  [ Clayton Calabrese ]
+  * undo unintentional default change. Inform users when adjusting lbto and lbcep from defaults. Add DroppedTransactions to report
+  * commit print statement that was unsaved in past commit
+  * count first and last window as complete windows if containing 12 blocks, otherwise ignore them.
+
+  [ greg7mdp ]
+  * Update appbase/plugins to support multiple instances/exe
+  * restore file deleted by mistake
+
+  [ Kevin Heifner ]
+  * GH-54 Add a print to activate so this bios contract is different then the bios contract used in eos-system-contracts avoiding a duplicate trx error on set_code of its bios contract.
+  * GH-54 Update deep mind log for new bios contract
+
+  [ Peter Oschwald ]
+  * Fixup from Merge branch 'main' into feature_performance_harness_stage_2
+  * Another fixup from Merge branch 'main' into feature_performance_harness_stage_2
+
+  [ Clayton Calabrese ]
+  * remove sorted keys and regenerate report for readme to reduce diff
+  * redo generated report using single producer
+  * refactor calcProductionWindows
+
+  [ greg7mdp ]
+  * Update submodules
+  * update submodules to same version as main
+
+  [ Peter Oschwald ]
+  * GH-637 Working to fix nodeos_snapshot_diff_test by sync on trx gen startup.
+  * Updates addressing peer review comments.
+  * GH-637 Make sure trx generators are cleaned up now that they are internal to Cluster.
+  * GH-637 Reintroduce the generic sleep for trx generation.
+  * GH-637 Initialize trxGenLauncher to None.
+
+  [ Kevin Heifner ]
+  * GH-592 Remove unused methods
+
+  [ Chris Gundlach ]
+  * made call to metrics async; using strands/named_thread_pool
+
+  [ 766C6164 ]
+  * Updates to swagger spec
+
+  [ Chris Gundlach ]
+  * format fix
+
+  [ Kevin Heifner ]
+  * GH-592 WIP Fixing threading issues with state_history_log and sessions
+
+  [ Clayton Calabrese ]
+  * seperate out new csv file containing data and rework as necessary
+
+  [ greg7mdp ]
+  * fix test_trx_retry_db test so that it initializes appbase correctly.
+  * Update to latest commit in appbase branch
+
+  [ Kevin Heifner ]
+  * GH-592 Fix bad merge issue which was causing core dump
+  * GH-592 truncate/prune only called from other public methods that already have a lock
+
+  [ greg7mdp ]
+  * Update appbase to latest commit
+  * update appbase to tip
+  * update appbase to tip
+
+  [ Jonathan Giszczak ]
+  * Add support for custom topologies and fix shell argument handling.
+
+  [ greg7mdp ]
+  * update appbase to tip
+  * Update appbase to tip
+  * Update appbase to tip
+  * Update appbase to tip
+  * Update appbase tip
+
+  [ Kevin Heifner ]
+  * Rename async_thread_pool to post_async_task to better describe its function
+  * Cleanup from peer review comments
+  * Rethrow exception if no on_except provided.
+
+  [ Matt Witherspoon ]
+  * fixes for gcc13
+
+  [ Chris Gundlach ]
+  * fixes based on peer review
+
+  [ greg7mdp ]
+  * Cleanup do_accept code, add timer on "too many files", keep accepting on error
+  * more straightforward management of the socket in `async_accept`
+  * Add timer when `async_accept()` gets a `too_many_files_open` error
+  * Add a couple comments
+  * Implement suggestions from Kevin's code review
+  * Update a couple log statements
+  * Update another `elog` instance to `fc_elog`
+
+  [ Clayton Calabrese ]
+  * add header to csv and filter out ungenerated transactions
+
+  [ Matt Witherspoon ]
+  * bump abieos submodule to HEAD w/ gcc13 fixes applied
+
+  [ Kevin Heifner ]
+  * Changed named_thread_pool to always delay start()
+
+  [ greg7mdp ]
+  * Update `wlog()` call to correct `fc_wlog()` which specifies the logger to be used.
+  * Create deadline timer when thread pool is created (thanks Matt!)
+  * Update appbase to tip.
+
+  [ Kevin Heifner ]
+  * Add reserve()
+
+  [ 766C6164 ]
+  * Added snapshot status to get_snapshots_requests
+
+  [ Kevin Heifner ]
+  * Empty commit to kick of ci/cd
+  * GH-586 Fix merge issue
+  * GH-592 Fix spelling
+
+  [ Clayton Calabrese ]
+  * rename csv
+
+  [ Kevin Heifner ]
+  * GH-592 Move log_* files only used by state_history into state_history library.
+
+  [ greg7mdp ]
+  * Update with code review comments and fix uninitialized variable
+
+  [ Clayton Calabrese ]
+  * change from .txt to .csv
+
+  [ greg7mdp ]
+  * Implement Matt's suggestion to forego the unique_ptr for the timer.
+
+  [ Jonathan Giszczak ]
+  * Don't launch nodes when --output is specified.
+
+  [ Kevin Heifner ]
+  * GH-568 Remove redundant bcast_block call for accepted_block signal.
+  * GH-568 Combined by_block_num index into by_connection_id so only one index has to be maintained.
+  * GH-568 Use block_header::num_from_id instead of storing block_num
+  * GH-568 Revert passing block_num to peer_block_state_index methods as it can just be calculated quickly from id
+
+  [ Clayton Calabrese ]
+  * change csv variable names to something more proper
+
+  [ Kevin Heifner ]
+  * GH-592 Fix shutdown issue with session_test
+  * GH-592 Remove explicit close and just let websocket destructor take care of it
+  * GH-592 Remove unneeded use of this->
+  * GH-592 Increase to have more than one connection to ship
+  * GH-592 Add missing return
+
+  [ 766C6164 ]
+  * Updates to schema
+
+  [ Peter Oschwald ]
+  * Rename in prep to support additional trx desc files.
+
+  [ Kevin Heifner ]
+  * GH-592 Minor cleanup from peer review comments
+
+  [ Jonathan Giszczak ]
+  * Tolerate empty specific extra nodeos args used by some tests as docs
+  * Honor unstarted nodes flag and validate total vs prod/unstarted.
+  * Temporarily remove some error suppression not yet ready for prime time.
+
+  [ Peter Oschwald ]
+  * Rename for generalization, not strictly for transfers.
+
+  [ greg7mdp ]
+  * update appbase to tip
+
+  [ Kevin Heifner ]
+  * GH-592 Move files back as they are used by block log splitting as well
+
+  [ Chris Gundlach ]
+  * updates to prometheus_plugin to support message based updates
+
+  [ greg7mdp ]
+  * call `register_plugin()` as a static member, so that static variable initializers don't create an application instance before the program is started.
+
+  [ Jonathan Giszczak ]
+  * Write start script when node isn't started by launcher.
+  * Support more than 26 producers in launcher.
+
+  [ Peter Oschwald ]
+  * Add way to specify auth acct when using json trx description.
+  * Refactoring. Moving functions into classes.
+  * Fix compiler warnings in tests.
+
+  [ greg7mdp ]
+  * Use `scoped_app` consistently in main programs.
+
+  [ 766C6164 ]
+  * Work in progress - requests scaffold, db
+
+  [ greg7mdp ]
+  * update appbase to tip
+  * Update appbase to tip.
+  * Update appnbase to tip
+
+  [ Peter Oschwald ]
+  * Add ability to configure log level for cluster via cli arg.
+
+  [ Lin Huang ]
+  * add no_auth_table to new unittests/test_contracts.hpp.in due to change by merge from main
+
+  [ greg7mdp ]
+  * Implement Matt's suggestion to collapse two classes into a single templated one.
+
+  [ Lin Huang ]
+  * change contracts to test_contracts
+
+  [ Jonathan Giszczak ]
+  * Implement bounce argument.
+
+  [ Clayton Calabrese ]
+  * merge from main
+
+  [ Matt Witherspoon ]
+  * clear executable flag on a couple source files
+
+  [ Kevin Heifner ]
+  * Make named_thread_pool a template that can be named via an eosio::chain::name.
+  * Remove abort()
+
+  [ greg7mdp ]
+  * Update appbase to tip
+
+  [ Kevin Heifner ]
+  * Use method so named_thread_pool template is on the stack. Thanks @spoonincode for the idea.
+  * Remove out of date comment
+  * GH-548 Log exception details
+
+  [ Chris Gundlach ]
+  * minor cleanup
+  * used std::move() to update metrics map rather than copy
+
+  [ Huang-Ming Huang ]
+  * address some PR comments
+  * use block_num_t consistently
+
+  [ Kevin Heifner ]
+  * GH-548 Make constructor explicit to avoid auto conversion from int64_t
+  * GH-548 Pass correct type
+
+  [ Huang-Ming Huang ]
+  * update based on PR comment
+
+  [ Jonathan Giszczak ]
+  * Remove nodeos_remote_test.
+
+  [ Kevin Heifner ]
+  * Use tag type for name instead of eosio::chain::name so no conversion from uint64_t needed. Thanks @greg7mdp for the idea.
+  * Remove std::abort()
+
+  [ Jonathan Giszczak ]
+  * Implement wait for terminating process on platforms without pidfd_open
+  * Fix typo.
+
+  [ Kevin Heifner ]
+  * GH-677 Move abi serialization off the main thread for get_block
+
+  [ Henrik Hautakoski ]
+  * plugins/producer_plugin/producer_plugin.cpp: Add block number to account_failures::report()
+
+  [ Jonathan Giszczak ]
+  * Capture ProcessLookupError independently of OSError.
+
+  [ Kevin Heifner ]
+  * GH-677 Refactor get_block into multiple methods for testing. Also fix issue with invalid abi should not throw exception.
+  * GH-677 Use std::move for abi into abi_serializer to avoid string copies.
+
+  [ Jonathan Giszczak ]
+  * Catch ProcessLookupError during terminate call and react appropriately
+
+  [ Kevin Heifner ]
+  * GH-677 Minor cleanup
+  * GH-677 Constrain scope
+  * GH-677 Fix invalid move
+  * GH-677 Use unnamed copy
+  * GH-677 Fix some uses of std::move
+
+  [ Clayton Calabrese ]
+  * fixed performance test basic, the main pt is still failing
+
+  [ Kevin Heifner ]
+  * GH-677 Use unnamed copy
+  * GH-677 Revert unneeded explicit copy
+
+  [ Henrik Hautakoski ]
+  * plugins/producer_plugin/producer_plugin.cpp: fix log message in account_failures::report()
+
+  [ Chris Gundlach ]
+  * mod to named_thread_pool construction
+  * added lambda for named thread pool start
+
+  [ Clayton Calabrese ]
+  * fix failure of performance test
+
+  [ Peter Oschwald ]
+  * Expand transaction generator to support new account trx
+
+  [ Jonathan Giszczak ]
+  * Fix merge error.
+
+  [ Peter Oschwald ]
+  * Fix argument names.
+  * Control test-duration-sec for these tests.
+
+  [ Kevin Heifner ]
+  * GH-395 Added resource-monitor-space-absolute-gb that overrides resource-monitor-space-threshold percentage option if specified. Also made sure file space warning is logged on exit when shutting down.
+  * GH-395 Combine all the unittests into one executable. Greatly improve run time for tests. Add new tests for resource-monitor-space-absolute-gb option.
+
+  [ Peter Oschwald ]
+  * Fix validate_nodeos_plugin_args test by updating NetPlugingArgs default.
+
+  [ Lin Huang ]
+  * bump appbase to the latest for clang compile errors
+
+  [ Peter Oschwald ]
+  * Apply nonparallelizable_tests flag to new tests.
+  * Make actions data and auths const.
+  * Fix Cluster's arguments for TransactionGeneratorsLauncher.
+  * Fix logic in log_transactions.
+
+  [ Kevin Heifner ]
+  * GH-395 Log values in GiB instead of Bytes. Other misc minor cleanup.
+  * GH-395 Avoid overflow
+
+  [ Huang-Ming Huang ]
+  * remove memory mapped file usage
+  * updated based on PR #628
+
+  [ Peter Oschwald ]
+  * Rename id to generator_id to be more specific.
+  * Address some peer review comments.
+
+  [ Huang-Ming Huang ]
+  * address some more PR comments
+
+  [ Peter Oschwald ]
+  * Additional peer review comments being addressed.
+  * GH-711 Update dependencies to include numpy.
+  * Address peer review comment. Virtual destructor added.
+  * Address additional peer review comments.
+
+  [ Huang-Ming Huang ]
+  * remove memory mapped file
+
+  [ greg7mdp ]
+  * wip - 100-continue works but not regular request.
+
+  [ Huang-Ming Huang ]
+  * make split log safer
+
+  [ greg7mdp ]
+  * wip - fix issue with regular request
+
+  [ Jonathan Giszczak ]
+  * Implement support for generating logging.json.
+
+  [ Clayton Calabrese ]
+  * add eosiomechanics cpu run to performance test basic
+
+  [ 766C6164 ]
+  * intermediate commit to sync changes
+  * wip schedule/unschedule to update json db
+
+  [ Jonathan Giszczak ]
+  * Omit typing not understood on most platforms.
+  * Enum class _generate_next_value can't be staticmethod on older Pythons
+
+  [ Peter Oschwald ]
+  * Add commentary and unit tests for account name generator.
+  * Fix typo in argument.
+  * Make private helper to protect usage.
+  * Correct the default priv keys to be valid key format.
+
+  [ greg7mdp ]
+  * Complete support for "100-continue"
+
+  [ Jonathan Giszczak ]
+  * nodeosLogPath still a string, not a pathlib Path.
+
+  [ greg7mdp ]
+  * small cleanups
+
+  [ Peter Oschwald ]
+  * Addressing peer review comments.
+  * Addressing peer review comments.
+
+  [ Jonathan Giszczak ]
+  * Stop using deprecated boost resolver overload.
+  * Fix merge errors.
+
+  [ 766C6164 ]
+  * Added ut to a snapshot scheduler
+
+  [ Jonathan Giszczak ]
+  * Fix merge error.
+
+  [ Kevin Heifner ]
+  * GH-627 Make block_log thread safe
+
+  [ Lin Huang ]
+  * bump appbase to the latest version for fixing test failures
+
+  [ Kevin Heifner ]
+  * GH-627 Make get_block_id_from_num thread-safe.
+  * GH-627 Update net_plugin to use new thread-safe block retrieval methods.
+  * GH-627 Add empty() method to sha256
+
+  [ greg7mdp ]
+  * Start implementing http_plugin unit tests
+
+  [ Kevin Heifner ]
+  * GH-627 WIP moving ship sending off main thread
+
+  [ 766C6164 ]
+  * Work in progress, moved things around
+
+  [ Clayton Calabrese ]
+  * add variable to be saved in report which captures arg string in full
+  * improve reporting for command line in performance tests. Replace README output with new data.
+
+  [ 766C6164 ]
+  * Added execution handlers, several updates
+
+  [ Michal Lesiak ]
+  * Increase vectors used in testing by 1 to fix invalid read
+  * Change INCBIN to INCTXT for abi to add trailing null terminator and fix invalid read
+
+  [ Chris Gundlach ]
+  * added metrics tracking for api calls
+  * added url to count metric
+
+  [ Clayton Calabrese ]
+  * add missing cpuTrxData.json file
+
+  [ Huang-Ming Huang ]
+  * merge bn256 submodule change
+  * remove fix-irreversible_block option
+
+  [ Clayton Calabrese ]
+  * revert some no longer necessary changes following merge and resolve test failures in doing so.
+  *  readd test-duration-sec to cpu performance test, remove lingering commas, set back assert in trx_generator main
+  * reduce size of specifiedContract through use of .account
+
+  [ greg7mdp ]
+  * wip - http_plugin unit tests
+  * wip
+  * wip
+
+  [ Jonathan Giszczak ]
+  * Add log messages, remove cruft and commented code.
+
+  [ Kevin Heifner ]
+  * GH-627 Optimize empty()
+  * GH-627 Refactor state_history_plugin to use a session_manager. The session_manager is used to coordinate sending since only one session can access the trace/delta log files at a time.
+
+  [ Clayton Calabrese ]
+  * revert a number of inadvertant whitespace changes due to removed code from merge. Fix printing of account type in json.
+  * improve visibility of TypeErrors and still output JSON when one occurs
+
+  [ Kevin Heifner ]
+  * GH-627 Cleanup and optimization
+
+  [ Clayton Calabrese ]
+  * rerun test and update readme
+
+  [ Kevin Heifner ]
+  * GH-627 Add logging of connection info
+
+  [ 766C6164 ]
+  * Improved data structures
+
+  [ Chris Gundlach ]
+  * took out cmake dependencies on chain_plugin
+
+  [ Kevin Heifner ]
+  * GH-627 Add more than one client to get better test coverage
+  * GH-627 Additional cleanup
+  * GH-627 Fix merge issue
+  * Update block_log to handle case of a block_log with no blocks
+  * Update tests for block_log not auto re-creating index file.
+
+  [ Chris Gundlach ]
+  * updated named_thread_pool usage
+
+  [ Clayton Calabrese ]
+  * add ram performance test. Rework how keys are put into contract account for performance test. revert the reversion of the setupWallet change
+
+  [ Kevin Heifner ]
+  * Create index on hard-replay
+
+  [ 766C6164 ]
+  * Little refactoring
+
+  [ greg7mdp ]
+  * update http_plugin test to test the Expect 100-continue support
+
+  [ Kevin Heifner ]
+  * GH-723 Optimize json parsing by using boost stream and std::string instead of std::stringstream
+  * GH-627 Add const as request in peer review
+
+  [ greg7mdp ]
+  * Fix issues when using new appbase
+
+  [ Kevin Heifner ]
+  * GH-721 Provide a bit more time for the contract to be cached.
+
+  [ Clayton Calabrese ]
+  * address PR comment to make contracts folder consistent.
+  * give ability to cleanup transaction generator in TestHelper shutdown
+
+  [ greg7mdp ]
+  * update to the latest appbase version
+
+  [ Jonathan Giszczak ]
+  * Bring cluster bootstrap into line with bios_boot.sh.
+
+  [ Clayton Calabrese ]
+  *  rearrange shutdown arguments to accomodate the 20 or so tests using shutdown without keyword arguments
+
+  [ Huang-Ming Huang ]
+  * Add auto bp peering functionality
+
+  [ Lin Huang ]
+  * customize appbase to support two queue executor in Leap, add tests, update Leap to use the cusomized appbase
+
+  [ Kevin Heifner ]
+  * GH-723 Use using to make less verbose.
+  * GH-723 Avoid potential temporary
+
+  [ Peter Oschwald ]
+  * Update README for new command line arguments to Performance Harness scripts.
+  * Update test report examples in README.
+
+  [ 766C6164 ]
+  * Hook snapshot generation to block_start
+
+  [ Lin Huang ]
+  * add read-only trx parallelization configuration options
+
+  [ Peter Oschwald ]
+  * Update docs for trx_generator README.
+
+  [ Clayton Calabrese ]
+  * Unwind shutdown changes as cluster killall will handle the transactiongeneratorlauncher now that it is set
+  * remove shutdown change from nodeos_startup_catchup
+  * remove unused import
+
+  [ Lin Huang ]
+  * add thread_ids method to return thread IDs of the threads in a thread pool
+
+  [ Clayton Calabrese ]
+  * update transaction datafiles to match new eosio.mechanics directory layout
+
+  [ Peter Oschwald ]
+  * Update log directory structure example.
+
+  [ Clayton Calabrese ]
+  * remove unavailable options from README for performance test
+
+  [ Lin Huang ]
+  * add a missing custom_appbase change for unittests
+  * make controller threaded safe for read-only transaction execution
+
+  [ greg7mdp ]
+  * Complete basic unit tests.
+
+  [ Clayton Calabrese ]
+  * re-report the readme report due to changes, and update performance test to accomodate chanes
+
+  [ Matt Witherspoon ]
+  * remove unused boost/bind.hpp include that generates a warning
+
+  [ Clayton Calabrese ]
+  * Expose a number of nodeos options via the CLI in performance_test_basic. Also hardcode some others.
+
+  [ Kevin Heifner ]
+  * GH-741 Reverted interface change to deprecated methods. Changed from rvalue reference to value so backward compatible for those using abi_serializer via tester.
+  * GH-741 Don't std::move abi since it is used after.
+
+  [ greg7mdp ]
+  * Remove boost warning suppression as requested by Matt in PR review
+  * Update whitespace to the PR doesn't show a diff for CMakeLists.txt
+
+  [ 766C6164 ]
+  * Included light boost integration test
+
+  [ Lin Huang ]
+  * simplify execution window setting and checking APIs
+  * update to use new app().executor().post()
+  * add support to specify which execution queue to post an RPC API
+  * Make chainApis and NetApis safe to multithreaded read-only transactions
+  * main work of parallelizing read-only thransaction execution
+  * update test contract for read-only transaction testing
+  * add tests for parallelizing read-only thransaction execution
+
+  [ Huang-Ming Huang ]
+  * fix test
+  * rename auto-bp-peer to p2p-auto-bp-peer
+
+  [ greg7mdp ]
+  * remove HTTPS support from http_plugin.
+  * remove HTTPS support from http_client_plugin
+  * remove HTTPS support from libfc in http_client.
+
+  [ Clayton Calabrese ]
+  * Restore accidentally removed config option. Added new option and updated README. Use choices for wasm-runtime. Add new options to the *Args constructors in both performance tests.
+  * fix some README issues in performance test
+
+  [ greg7mdp ]
+  * remove https options from docs.
+  * revert removal of OPENSSL_ROOT_DIR in top CMakeLists.txt.
+  * Update whitespace to avoid diff in PR.
+  * fixup! Update whitespace to avoid diff in PR.
+  * fix test failure (keosd_auto_launch_test.py)
+
+  [ Jonathan Giszczak ]
+  * Get nodeos version in Node either on init or launch.
+
+  [ Huang-Ming Huang ]
+  * change file mode
+
+  [ Clayton Calabrese ]
+  * merge from main and rerun generate_nodeos_plugin_args
+
+  [ Huang-Ming Huang ]
+  * address PR comment
+
+  [ Jonathan Giszczak ]
+  * Add dependency resolver for protocol features.
+
+  [ Lin Huang ]
+  * simplify thread data by using thread_local for timer and wasm_alloc
+
+  [ Kevin Heifner ]
+  * GH-659 Move initialization of logging before plugin_initialize so configured logging works as expected
+  * GH-659 resource monitor test assumes this is logged, but runs with info level logging.
+  * GH-659 Change name() to get_name() that returns by value. This prevents accident use of returned const& after logger has been destroyed.
+  * GH-659 get_name() returns by value which removes the need for this comment.
+
+  [ Lin Huang ]
+  * revert thread_ids() method
+
+  [ Huang-Ming Huang ]
+  * address PR comments
+
+  [ Clayton Calabrese ]
+  * add a sanity check for number of transactions scraped from trx gen
+
+  [ Huang-Ming Huang ]
+  * address PR comments
+  * revert catching fc::exception
+  * fix typo
+
+  [ Jonathan Giszczak ]
+  * Fix timing issue in cli_test.
+
+  [ Lin Huang ]
+  * add an optional init function to be called when a thread is started
+  * make multi-threaded eos-vm-oc work
+
+  [ Huang-Ming Huang ]
+  * move gelf logging to another thread
+  * remove unnecessary return
+
+  [ Lin Huang ]
+  * move custom_appbase from under plugin to under libraries directory
+
+  [ Clayton Calabrese ]
+  * resolve test failure for ram and cpu performance tests due to id collision
+
+  [ Jonathan Giszczak ]
+  * Fix timing issue in compute_transaction_test.
+
+  [ Clayton Calabrese ]
+  * change enable args in performance_test_basic to be store_true instead of bools.  Put eos-vm-oc-enable in ptb only onto non producer nodes. Remove duplicate choice in wasm-runtime
+
+  [ Lin Huang ]
+  * do not enforce max_action_return_value_size for read-only transactions
+
+  [ Huang-Ming Huang ]
+  * fix merge problem
+  * some more merge issue fix
+  * more merge issue fix
+  * address PR comments
+
+  [ greg7mdp ]
+  * remove http_client_plugin doc (unneeded after https removal)
+
+  [ Chris Gundlach ]
+  * updates based on feedback from pr
+
+  [ greg7mdp ]
+  * Remove reference to `http_client_plugin` page, which was removed.
+
+  [ Peter Oschwald ]
+  * Updates per peer review.
+
+  [ 766C6164 ]
+  * Added second snapshot request to test
+
+  [ Peter Oschwald ]
+  * Update reports in readme.
+
+  [ Huang-Ming Huang ]
+  * address PR comments
+
+  [ Clayton Calabrese ]
+  * rename eos-vm-oc-enable in performance test to represent it only affecting non producer nodes. Resolve related test failure.
+
+  [ Huang-Ming Huang ]
+  * More merge fix
+
+  [ Lin Huang ]
+  * make wasmif in controller and executor in eosvmoc_runtime as default member to allow multiple controllers in unittest
+
+  [ 766C6164 ]
+  * Updated yaml formatting
+
+  [ Clayton Calabrese ]
+  * add fix for duplicate transaction in transaction generators when resigning transactions
+
+  [ Jonathan Giszczak ]
+  * Spacing.
+  * Consolidate bounce and down implementations in launcher.
+  * Remove use of eosio-launcher in Cluster killall().
+
+  [ Huang-Ming Huang ]
+  * address some PR comments
+  * address PR comments
+  * fix mark_bp_connection
+
+  [ Lin Huang ]
+  * use an enum to indicate which queue to post; use write queue for default queue to post; and clean up use of app().post in producer_plugin
+
+  [ 766C6164 ]
+  * Addressing feedback comments 1/2
+
+  [ Peter Oschwald ]
+  * Update ChainPluginArgs to capture arguments added to chain plugin.
+
+  [ Huang-Ming Huang ]
+  * avoid join called from its own thread
+
+  [ Peter Oschwald ]
+  * Update the min threads to start at when calculating number of threads to give to plugins to the plugin default.
+
+  [ Clayton Calabrese ]
+  * expose --user-trx-data-file to performance test
+
+  [ greg7mdp ]
+  * Address PR Comments. Return code 417 when `Expect` fails.
+
+  [ Clayton Calabrese ]
+  * remove unneeded arg in performPtbBinarySearch
+
+  [ greg7mdp ]
+  * Revert to using code `unauthorized` (see PR comment).
+
+  [ Clayton Calabrese ]
+  * also fix linearsearch test case for performance test.
+
+  [ Lin Huang ]
+  * For EOS-VM-OC, make sure the system has enough virtual memory for the number of read-only transaction execution threads
+
+  [ Clayton Calabrese ]
+  * revert an unintentional change ot the defaults in performance test
+
+  [ Peter Oschwald ]
+  * Handle excpetions occurring during runTest.
+
+  [ Jonathan Giszczak ]
+  * Restore nodeosVers to performance test ClusterConfig.
+
+  [ Huang-Ming Huang ]
+  * address PR comments
+
+  [ 766C6164 ]
+  * Addressing feedback (2/2 minus refactoring)
+
+  [ Kevin Heifner ]
+  * GH-592 Add comment
+
+  [ Lin Huang ]
+  * do not allow state-changing readonly privilege, schedualing and canceling deferred transaction host functions
+
+  [ 766C6164 ]
+  * Make sure snapshot state preserved
+
+  [ Lin Huang ]
+  * correct add_pending_ram_usage's handling of deep-mind logging
+  * set global_action_sequence and recv_sequence to 0 for read-only transactions
+  * correct bad comments about dm logging and improve error message for scheduling/cacelling deferred transactions
+
+  [ Peter Oschwald ]
+  * Update ProducerPluginArgs for new arguments introduced on main.
+
+  [ Lin Huang ]
+  * remove max-read-only-transaction-time option which is not neccessary
+
+  [ 766C6164 ]
+  * Addressing feedback
+  * Handle situation where mlock_spacing is not specified
+
+  [ Jonathan Giszczak ]
+  * Restore lost raise_if_missing argument from bounce/down consolidation.
+  * Keep Node's self.cmd up to date if a node is relaunched.
+
+  [ Huang-Ming Huang ]
+  * remove unnecessary using
+
+  [ Clayton Calabrese ]
+  * set cmake test runs of performance_test_basic to a lower value for chain-state-db-size-mb to reduce allocated space
+
+  [ Kevin Heifner ]
+  * GH-659 Fix merge issue
+  * GH-659 Add a test that verifies restart from genesis not allowed
+
+  [ Clayton Calabrese ]
+  * fix introduced compatibility issues for nodeos 2.0 in performance tests
+
+  [ Kevin Heifner ]
+  * GH-659 Fix indentation
+
+  [ Clayton Calabrese ]
+  * simplify version check for resource monitor plugin constructor in performance tests
+
+  [ Jonathan Giszczak ]
+  * Remove timeout on plugin_http_api_test.
+  * Fix merge error.
+  * Raise TimeoutError if unable to determine nodeos version.
+
+  [ 766C6164 ]
+  * Multiple fixes: pendings, tests, namings
+  * Removed debug message
+  * Made schedule_snapshot params optional
+
+  [ greg7mdp ]
+  * Cleanups from PR comments. Thanks @mikelik!
+
+  [ Kevin Heifner ]
+  * GH-772 Remove unused methods
+
+  [ greg7mdp ]
+  * update url_handler to take rvalues.
+
+  [ Kevin Heifner ]
+  * GH-772 Simplify fork db head interface on controller. Fixes issue with net_plugin asking for a block that should be available but is not.
+
+  [ greg7mdp ]
+  * Update http_pluging API definitions with lambdas taking rvalues
+
+  [ Kevin Heifner ]
+  * GH-772 Simplify fetch_block_state_by_number by using controller fork_db_head_block_id() which checks db mode.
+
+  [ Peter Oschwald ]
+  * Update StateHistoryPluginArgs for new arguments introduced on main.
+
+  [ Lin Huang ]
+  * remove deprecated cleos option read-only for compute_transaction
+  * make names better to reflect the intentions and update comments
+
+  [ Jonathan Giszczak ]
+  * Restore an increased ctest timeout for plugin_http_api_test.
+  * Removing exception in Node pollversion to tolerate the small number of tests which use relaunch or launchcmd.
+
+  [ Clayton Calabrese ]
+  * Add new section to log_reader_tests to ensure 2.0 compatibility doesn't get broken by changes to scrapeBlockTrxDataLog in the future.
+
+  [ greg7mdp ]
+  * Address PR comment - remove unused parameter.
+
+  [ Kevin Heifner ]
+  * GH-772 Add a fork_db_head() to consolidate db_read_mode::IRREVERSIBLE check
+
+  [ Clayton Calabrese ]
+  * refactor log_reader use of nodeos version so it isn't recalculated multiple times during a test run
+  * pass along nodeos version in performance test rather than calculating in multiple places
+  * rename file passed into log_reader_tests to a proper .gz suffix
+
+  [ greg7mdp ]
+  * Forgot to stage this file after merging
+
+  [ Jonathan Giszczak ]
+  * Remove per-node configuration of nodeos version.
+
+  [ Kevin Heifner ]
+  * GH-772 Remove unused variables
+  * GH-772 Additional cleanup
+
+  [ Lin Huang ]
+  * bump appbase version and fix logging.conf not working problem
+  * use std::thread::id instead of boost::thread::id, combine start methods in thread_utils, and add override to init_thread_local_data in eosvmoc_runtime
+  * put _ro_trx_queue and its mutex into a struct, use std::atomic for _ro_num_active_trx_exec_tasks; use fc::microseconds for microsecond members
+
+  [ 766C6164 ]
+  * Fixed pending snapshot test
+
+  [ Lin Huang ]
+  * Assert no active read-only tasks when switching to write window; start read-only tasks before timer; several comment and format improvements
+
+  [ Kevin Heifner ]
+  * Cleanup
+
+  [ Huang-Ming Huang ]
+  * address PR comments
+
+  [ greg7mdp ]
+  * Address code review comments from @mikelik.
+
+  [ Lin Huang ]
+  * remove _ro_read_window_pct and use _ro_read_window_minimum_time_us instead, check _ro_read_window_time_us and _max_transaction_time_ms interaction, more conservative on EOS VM OC VM size, and several small enhancements
+
+  [ Jonathan Giszczak ]
+  * Wait for trans in block for each group of protocol features, to ensure prerequisites complete.
+
+  [ greg7mdp ]
+  * Add a comment.
+
+  [ Jonathan Giszczak ]
+  * Auto-detect running integration tests as root or not.
+  * Enable extracting stdout/stderr from CalledProcessError.
+
+  [ Lin Huang ]
+  * small cleanups in controller and producer_plugin
+
+  [ Jonathan Giszczak ]
+  * Try uid rather than euid for Github environment.
+  * Github
+
+  [ Kevin Heifner ]
+  * Fix merge conflicts
+
+  [ Jonathan Giszczak ]
+  * Missing seccomp setting from NP and LR tests.
+
+  [ Kevin Heifner ]
+  * Use http_plugin max_response_time
+
+  [ Jonathan Giszczak ]
+  * Indentation.  (Lost in auto-merge?)
+  * Github
+  * Github
+
+  [ 766C6164 ]
+  * Added multinode py test, fixed bug in scheduler
+
+  [ Lin Huang ]
+  * do not all multi-threaded read-only transaction execution when production is enabled; revert net_plugin process_packed_transaction changes; and some minor changes
+  * fix merging conflict errors
+  * make custom_appbase as an interface so its users do not need to use relative include path in their CMakeList.txt files
+
+  [ 766C6164 ]
+  * Better handling of "now" snapshots
+
+  [ Lin Huang ]
+  * update _idle_trx_time, correct assertion text for read-only-thread with production node
+
+  [ Kevin Heifner ]
+  * Minor cleanup and fix for clang++ warning: suggest braces around initialization of subobject [-Wmissing-braces]
+
+  [ 766C6164 ]
+  * Updated snapshot_diff_test to use scheduler
+  * Cleanup requests with invalid start
+
+  [ Lin Huang ]
+  * Do not post transaction related RPCs to general queue, revert not to do push_receipt for read-only trx, and move _ro_trx_exec_tasks_fut.clear inside post task
+  * use _producers.empty() instead _production_enabled to determine production node
+
+  [ Kevin Heifner ]
+  * Use appbase with external order for priority queue.
+
+  [ Lin Huang ]
+  * protect code cache from evicting entries while read-only trxs threads are executing
+
+  [ Clayton Calabrese ]
+  * remove hardcoded use of TestLogs name from tests
+
+  [ Peter Oschwald ]
+  * Updates for changes in nodeos plugin args from merge from main.
+  * Cleanup some missed https support from test that was missed.
+
+  [ Lin Huang ]
+  * do not use mutex for code_cache_async::get_descriptor_for_code and protect _cache_index.relocate
+
+  [ 766C6164 ]
+  * Fixed whitespace plus additional test
+
+  [ Peter Oschwald ]
+  * Clean up argument handling per peer review suggestions.
+  * Reintroduce stop-on-trx-failed argument.
+
+  [ Kevin Heifner ]
+  * Use correct register_plugin of appbase
+
+  [ Clayton Calabrese ]
+  * evenly distribute created transaction generators across multiple producer's ports
+  * account for other routes into transactiongeneratorlauncher when dealing with ports
+  * update readmes for trxgen and perf test to fit new port system
+
+  [ Jonathan Giszczak ]
+  * Github
+
+  [ Lin Huang ]
+  * refactor push_read_only_transaction to reuse common push transaction result handling
+
+  [ Kevin Heifner ]
+  * Update appbase to head of main
+
+  [ Clayton Calabrese ]
+  * Remove hardcoded number of ports in transaction generator
+
+  [ Jonathan Giszczak ]
+  * Fix misspelling.
+
+  [ Peter Oschwald ]
+  * Work to coalesce arguments into config objects.
+  * Put back in blank line so list will render properly.
+
+  [ Jonathan Giszczak ]
+  * Github
+  * Manually set GITHUB_ACTIONS environment variable in custom docker run.
+
+  [ Peter Oschwald ]
+  * Addressing peer review comments
+
+  [ Lin Huang ]
+  * make handle_push_result some simpler and rename exhausted to retry to better reflect intention.
+
+  [ Jonathan Giszczak ]
+  * Fix defect in launcher_test when no asserts found in log.
+
+  [ Huang-Ming Huang ]
+  * fix create_metrics_listener
+  * address PR comment
+  * fix mutable
+
+  [ Peter Oschwald ]
+  * Cleaning up using namespace statements and namespace qualifiers.
+
+  [ Jonathan Giszczak ]
+  * Update auto-bp-peering test for new launcher topology format.
+
+  [ Lin Huang ]
+  * revert back pushing receipts, correct a commment about non-parallized read-only trx
+  * fix crash caused by handle_push_result
+  * make read_only_trx_test handle clean-run properly
+
+  [ Kevin Heifner ]
+  * Cleanup for peer review comments
+  * Use tlog for trace logging of adding metrics
+  * Add tracking of num_peers and num_clients
+
+  [ Huang-Ming Huang ]
+  * create integeration test
+  * head_block_num
+  * remove num_call assertion
+
+  [ Peter Oschwald ]
+  * Fix braces.
+  * Address peer review comments.
+  * Address peer review comments.
+
+  [ Lin Huang ]
+  * add transient_trx_success_tracing and transient_trx_failure_tracing for dry-run and read-only transactions; remove a redundant db_read_only_mode_guard.cancel
+
+  [ Peter Oschwald ]
+  * Peer review comment.
+  * Addressing peer review comments.
+
+  [ 766C6164 ]
+  * Addressing feedback
+
+  [ Peter Oschwald ]
+  * Update ProducerPluginArgs for newly added arguments.
+  * Addressing peer review comments.
+
+  [ Lin Huang ]
+  * fix a capture reference probem in http_plugin::make_app_thread_url_handler, remove duplicate code in transient_trx logging, and some small changes
+
+  [ Kevin Heifner ]
+  * GH-788 Remove abi_bin_to_json
+  * GH-788 Remove abi_json_to_bin
+
+  [ Peter Oschwald ]
+  * Fixup documentation for missing arguments.
+
+  [ Kevin Heifner ]
+  * GH-789 Remove --private-key option from nodeos
+  * GH-789 Fix regex
+
+  [ Lin Huang ]
+  * Use correct window deadline and max trx time
+
+  [ Scott Bailey ]
+  * Search for LLVM versions 7-11, prefering latest version.
+
+  [ Peter Oschwald ]
+  * Address peer review comments.
+
+  [ Jonathan Giszczak ]
+  * Remove obsolete support for txn_test_gen_plugin.
+
+  [ Peter Oschwald ]
+  * Addressing peer review comment to remove unused code.
+  * Addressing peer review comments.
+  * Generate *PluginArgs.py files directly.
+  * Don't require these find packages, which are already being done higher up.
+  * Switch to support older versions of python.
+
+  [ Lin Huang ]
+  * delete removed abi_json_to_bin and abi_bin_to_json from read_only_trx_test.py
+  * set a hard limit of read-only trx thread number for EOS VM OC
+
+  [ Scott Bailey ]
+  * Addressing review comment.
+  * Ubuntu18 default CMake is 3.10 and will not execute the search path.
+
+  [ Lin Huang ]
+  * for dry-run, only append action_receipt_digests; add more comments about thread-local data
+
+  [ Peter Oschwald ]
+  * Switch to support older versions of python.
+
+  [ Scott Bailey ]
+  * untabify
+
+  [ Lin Huang ]
+  * make code_cache_sync (used by EOSIO_EOS_VM_OC_DEVELOPER) multi-threaded safe
+  * compile when EOSIO_EOS_VM_OC_RUNTIME_ENABLED is not defined
+  * add a test of doing read-only trxs, send_transaction, and push_block in parallell; improve test names
+
+  [ Huang-Ming Huang ]
+  * remove eosio-blocklog
+
+  [ Peter Oschwald ]
+  * Remove unnecessary dependency on contracts.
+
+  [ Clayton Calabrese ]
+  * merge main containing performance test phase 2 into python launcher
+
+  [ Lin Huang ]
+  * more comments and finishing touch
+  * correct typos in comments
+
+  [ Clayton Calabrese ]
+  * resolve some cleanup from merge PR
+
+  [ jgiszczak ]
+  * Reduce CMakeLists verbosity still further.
+
+  [ Jonathan Giszczak ]
+  * Address review comments.
+
+  [ Kevin Heifner ]
+  * Improve logging during syncing when producer_plugin debug level is enabled.
+
+  [ Lin Huang ]
+  * correct typos in comments
+
+  [ Kevin Heifner ]
+  * Add comment
+
+  [ Jonathan Giszczak ]
+  * Fix missed rename of Queries class.
+
+  [ Matt Witherspoon ]
+  * fix mixed up boost test linkage in ship session_test
+
+  [ Jonathan Giszczak ]
+  * More missed renames of Queries class.
+
+  [ Lin Huang ]
+  * Add read-only trxs unit tests test_read_only_trx.cpp
+  * do not check is_building_block
+
+  [ 766C6164 ]
+  * Fix for the flakiness of snapshot test
+
+  [ Lin Huang ]
+  * put back chain.is_building_block() check
+
+  [ Huang-Ming Huang ]
+  * fix tests
+
+  [ Lin Huang ]
+  * fail some trxs on authorization and expiration; wait sufficient time for all transactions to be executed
+
+  [ Huang-Ming Huang ]
+  * fix unittest
+  * fix snapshot test
+
+  [ Kevin Heifner ]
+  * GH-808 All other integration tests set a high abi-serializer-max-time-ms and http-max-response-time-ms. Increase for this test as well.
+
+  [ Lin Huang ]
+  * fix merge conflicts from Main
+
+  [ Jonathan Giszczak ]
+  * Remove eosio-launcher and testnet.template shell script.
+
+  [ Lin Huang ]
+  * Move update_runtime_options, set_whitelist_blacklist, and schedule_protocol_feature_activations to general queue
+
+  [ 766C6164 ]
+  * Improved snapshot_diff test
+
+  [ Lin Huang ]
+  * move more read-only-non-safe operations to general queue
+
+  [ 766C6164 ]
+  * Quit node gracefully on scheduler errors
+
+  [ Lin Huang ]
+  * move add_greylist_accounts and remove_greylist_accounts to general queue; correct an error text
+
+  [ Clayton Calabrese ]
+  * allow passing of endpoints in addition to ports. Create even distribution of generators accross ports based on number of ports passed to the transaction generator launcher
+
+  [ Lin Huang ]
+  * make exec_queue parameter explicit in all APIs
+
+  [ 766C6164 ]
+  * Renamed and cleaned up last test
+  * cleaned up listeners/handlers
+
+  [ Clayton Calabrese ]
+  * rework when splitting of connectionpairList happens to simplify use
+
+  [ Lin Huang ]
+  * make window switching assert conditions stronger
+  * revert _ro_num_active_trx_exec_tasks to uint32_t
+
+  [ Clayton Calabrese ]
+  * Convert Cluster's connectionPairList to match proper format
+
+  [ Peter Oschwald ]
+  * Fix lost force option.
+  * Add TestHarness python integration scripts to dev-install package.
+
+  [ jgiszczak ]
+  * Create output directory just-in-time for the shutdown case.
+
+  [ 766C6164 ]
+  * Addressing feedback
+
+  [ Jonathan Giszczak ]
+  * Correct syntax of suggested change.
+
+  [ Peter Oschwald ]
+  * Fix install steps to only apply to COMPONENT dev
+
+  [ 766C6164 ]
+  * make sure future scheduled snapshots treated correctly
+
+  [ Peter Oschwald ]
+  * Update core_symbol imports to reflect it being part of TestHarness module.
+
+  [ 766C6164 ]
+  * fixed ups
+  * logic fix
+  * one more fix
+
+  [ Peter Oschwald ]
+  * Fix some dataclass initialization for python 3.11
+  * Add performance_test run to long_running_tests to exercise performance_test.py.
+  * Add performance test to excercise user defined contract and test action with data file.
+
+  [ Huang-Ming Huang ]
+  * get_raw_block api endpoint
+
+  [ 766C6164 ]
+  * break after unschedule
+
+  [ Clayton Calabrese ]
+  * remove undesired read_log_data.py and related components
+
+  [ Huang-Ming Huang ]
+  * address PR comment
+
+  [ Jonathan Giszczak ]
+  * Make network isolation default disabled but enabled in CI/CD.
+  * Fix merge error.
+  * Missed a moved variable in performance test basic.
+  * Fix test bug.
+
+  [ 766C6164 ]
+  * more selectability for invalid request
+  * should allow loop to run from start to finish
+
+  [ Huang-Ming Huang ]
+  * address PR comments
+
+  [ Peter Oschwald ]
+  * Update install mkdir and symbolic linking steps.
+  * Fix bug causing possible division by 0.
+
+  [ Jonathan Giszczak ]
+  * Avoid division by zero in performance_test.
+
+  [ Peter Oschwald ]
+  * Fix command line argument passing.
+  * Fix comment to reflect updated floor in range.
+  * DataDir now returns absolute path instead of relative.
+
+  [ 766C6164 ]
+  * Addressing feedback
+
+  [ Peter Oschwald ]
+  * Address peer review comment.
+
+  [ Clayton Calabrese ]
+  * update readme to reflect port endpoint changes in performance harness
+  * handle whitespace stripping in launch transaction generators
+  * use proper arg instead of empty string in launch transaction generators
+
+  [ Peter Oschwald ]
+  * Address peer review comments.
+  * Peer review recommended using sh instead of bash as more likely to exist.
+  * Address a couple more review comments.
+
+  [ Jonathan Giszczak ]
+  * Fix automatic merge failure.
+  * Clean up launcher log directory on successful run.
+
+  [ Peter Oschwald ]
+  * Addressing peer review comment.
+
+  [ Jonathan Giszczak ]
+  * Ignore errors in shutil.rmtree.
+
+  [ 766C6164 ]
+  * feedback addressed
+
+  [ Jonathan Giszczak ]
+  * Fix merge error.
+
+  [ Huang-Ming Huang ]
+  * fix assertion message
+
+  [ Jonathan Giszczak ]
+  * Fix merge error.
+
+  [ Matt Witherspoon ]
+  * fix un/signed comparison warning in autobp peering
+
+  [ 766C6164 ]
+  * feedback addressed
+
+  [ Peter Oschwald ]
+  * Don't overwrite the env variable so you get both postinst and prerm
+
+  [ Jonathan Giszczak ]
+  * Some limits to prevent division by zero in performance linear search.
+
+  [ Clayton Calabrese ]
+  *  use lambda for transaction generator calculations
+
+  [ Peter Oschwald ]
+  * Update package.cmake
+
+  [ Jonathan Giszczak ]
+  * Update test from main.
+
+  [ Peter Oschwald ]
+  * Best effort attempt to remove the directorys we may have created during the install.
+  * Simplify postinst and prerm scripts
+
+  [ Zach Butler ]
+  * E003 - Inconsistent indentation
+  * E001 - Trailing Whitespace
+  * E011 - then keyword is not on same line as if or elif keyword
+  * SC2242 - error: Can only exit with status 0-255. Other data should be written to stdout/stderr.
+  * SC2068 - error: Double quote array expansions to avoid re-splitting elements
+  * SC2034 - warning: CORE_SYM appears unused. Verify use (or export if used externally).
+  * SC2034 - warning: ARCH appears unused. Verify use (or export if used externally).
+  * SC2034 - warning: "output" appears unused. Verify use (or export if used externally).
+  * SC2164 - Use "pushd ... || exit" or "pushd ... || return" in case pushd fails.
+  * SC2294 - warning: eval negates the benefit of arrays. Drop eval to preserve whitespace/symbols (or eval as string).
+  * SC2086 - note: Double quote to prevent globbing and word splitting.
+  * SC2006 - note: Use $(...) notation instead of legacy backticks `...`
+  * SC2016 - note: Expressions don't expand in single quotes, use double quotes for that
+  * Fix shebang in bash build scripts
+  * Revert "Merge pull request #799 from AntelopeIO/sbailey/autofind_llvm_7-11"
+  * Cooler Leap ASCII art banner at end of pinned build script
+  * Appreciate our users and make them feel like they are part of a community
+
+  [ Kevin Heifner ]
+  * Fix issue with erasing element while iterating
+  * Fix issue with erasing element while iterating
+
+  [ Peter Oschwald ]
+  * Fix CORE_SYMBOL import and cleanup other imports.
+
+  [ 766C6164 ]
+  * test fix
+  * sync scheduled snapshot with 2 others
+
+  [ Lin Huang ]
+  * Fix test coverage regression by a bad merge conflict in PR #192
+  * add missing
+
+  [ Zach Butler ]
+  * Whitespace
+  * "apt-get install -y"
+  * Quote strings
+  * Sort packages, each one on its own line
+  * Restore libcurl4-openssl-dev
+  * tzdata does not need to be separate
+  * SC2034 - warning: DEBIAN_FRONTEND appears unused. Verify use (or export if used externally).
+  * export TZ
+
+  [ Lin Huang ]
+  * Bump Leap Main branch version to 4.1.0-dev
+  * Create v4.0.0-rc1 on release/4.0 branch
+
+ -- Henrik Hautakoski <henrik@eossweden.org>  Fri, 24 Mar 2023 11:08:27 +0100
+
 leap (3.2.2-1ubuntu1) unstable; urgency=medium
 
   [ Kevin Heifner ]
