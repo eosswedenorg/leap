@@ -1,3 +1,21 @@
+leap (3.2.3-1) bionic focal; urgency=medium
+
+  [ Kevin Heifner ]
+  * [ebadb713] GH-891 Use block_num for interrupt of start_block to handle case of receiving block before beginning of start_block
+  * [efd642b1] GH-596 flush log and index files to make it more likely that a kill-9 or crash leaves valid ship logs.
+  * [51c4bea2] GH-596 forkdb reset in replay since blocks are signaled
+  * [12924afa] Add test for forking in SHiP
+  * [fa8d025c] Make sure SHiP sends new blocks on forks
+  * [6fb28e5f] ship_streamer_test now the longest running nonparallelizable_tests, so make it long_running_test
+  * [c3814b9e] Use 10 clients for test. Minor cleanups to ship_streamer_test.py
+  * [bb7fc8d1] Fix spelling
+  * [fa2b7fec] Use f-strings
+
+  [ Lin Huang ]
+  * [adaec770] Bump Leap version to 3.2.3
+
+ -- Henrik Hautakoski <henrik@eossweden.org>  Wed, 26 Apr 2023 06:36:17 +0200
+
 leap (3.2.2-1ubuntu1) unstable; urgency=medium
 
   [ Kevin Heifner ]
