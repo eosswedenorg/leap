@@ -40,8 +40,8 @@ class PluginHttpTest(unittest.TestCase):
         self.keosd.killall(True)
         WalletMgr.cleanup()
         Node.killAllNodeos()
-        if os.path.exists(self.data_dir):
-            shutil.rmtree(self.data_dir)
+        if os.path.exists(Utils.DataPath):
+            shutil.rmtree(Utils.DataPath)
         if os.path.exists(self.config_dir):
             shutil.rmtree(self.config_dir)
         time.sleep(self.sleep_s)
@@ -1341,8 +1341,8 @@ class PluginHttpTest(unittest.TestCase):
     def test_prometheusApi(self) :
         resource = "prometheus"
         command = "metrics"
-
-        ret_text = self.nodeos.processUrllibRequest(resource, command, returnType = ReturnType.raw ).decode()
+        endpointPrometheus = f'http://{self.nodeos.host}:9101'
+        ret_text = self.nodeos.processUrllibRequest(resource, command, returnType = ReturnType.raw, method="GET", endpoint=endpointPrometheus).decode()
         # filter out all empty lines or lines starting with '#'
         data_lines = filter(lambda line: len(line) > 0 and line[0]!='#', ret_text.split('\n'))
         # converting each line into a key value pair and then construct a dictionay out of all the pairs
