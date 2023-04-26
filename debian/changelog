@@ -1,3 +1,280 @@
+leap (4.0.0-rc3-1) bionic focal; urgency=medium
+
+  [ Lin Huang ]
+  * [38d3c39e] track transient trx on main thread execution time specifically
+  * [0ed5d6da] track read-window time
+  * [8d86d7d2] change is_main_thread method name to is_on_main_thread
+  * [fb21cdec] add us (for microseconds) to time text
+  * [07af4488] add total time spent by all threads and minor format changes
+  * [c600fbe0] let add_success_time and add_fail_time handle transient trxs time tracking
+  * [44b56b38] use std::atomic<int64_t> for total thread time for simplicity
+
+  [ greg7mdp ]
+  * [72ea6558] Cleanup and prevent thread starvation while in the read window.
+  * [81939db6] Forgot one notify_one call.
+  * [7b22be38] Update comment
+  * [2a965310] Consistent exit when read_window_deadline is reached, and encapsulate exit criteria in ro_trx_queue_t
+  * [033ca045] Small cleanups.
+  * [f7822e32] Small cleanups and comments.
+  * [8289563b] Add two assert() checks.
+  * [0688dc72] Fix a couple issues - now tests pass!
+  * [da8a5076] Add C++ test exercizing readonly transactions in read window.
+  * [77e96f84] simplify capture list
+  * [aad17294] No need to check for option's presence since it has a default value
+  * [5a76c1b2] Deal with possible spurious wakeups from wait().
+  * [d75db84a] Notify condition_variable under the lock.
+  * [30fc0862] Implement code review comments.
+  * [ac61ecd8] Add extra test with 1 readonly thread
+  * [1ca223ca] Address PR comments
+  * [4379207d] Replace option to turn off checking with a static variable.
+  * [12c9cdfe] Fix test issue (uninitialized variables)
+  * [e4c138d4] simplify cond wait - greatly inspired from Kevin's branch
+
+  [ Kevin Heifner ]
+  * [ebadb713] GH-891 Use block_num for interrupt of start_block to handle case of receiving block before beginning of start_block
+
+  [ greg7mdp ]
+  * [e05b7377] Fix hang occuring sometimes in test
+
+  [ Kevin Heifner ]
+  * [e2ad3488] Execute read safe tasks on read-only thread pool.
+  * [3239eb72] Update to appbase with priority queue pop()
+  * [cfa2cc2e] Read-only execution can run during write window so set read_window_deadline to allow it.
+  * [c10195cd] Update tests for pop() happening before execute()
+  * [5ac13271] Cleanup variable names and comments and fix mutex lock around execute_highest_read_only()
+  * [aca29eb8] Cleanup comments
+  * [8d8db42f] Consistently execute read-only trx via process_read_only_transaction()
+  * [f53341b9] When running without read only thread pool, execute exhausted read only trxs during start block.
+  * [052faf63] max-transaction-time is required to be less than read-only-read-window-time-us
+  * [1ff7e7de] Revert to appbase main branch
+  * [d97aaf1a] Add required thread safety to execution priority queue.
+  * [f051bad2] Swith db read mode when executing read-only trx on the main thread
+  * [8ca77432] Update comments
+  * [791c2c9c] Clean up some comments
+  * [44f74294] Move operations not safe to run in parallel onto general queue
+  * [366a9bb7] Rename read_only_trx_safe to read_only_safe
+  * [a913cdbf] Use read_only_safe queue for switching. Add comments on why.
+  * [709c0a94] Fix merge conflicts
+  * [d13c0569] net_plugin operations do not have to be on the main thread at all.
+  * [73da5505] Rename general queue to read_write queue and read_only_safe queue to read_only queue.
+  * [5126601c] Rename some variables and add some additional comments
+  * [7893eebf] Add --num-test-runs option and fix get_table_rows to not generate an error
+  * [d9c9150b] Enabled read-only thread pool on non-producer nodes by default with 3 threads.
+  * [ea43426c] Fix test configuration
+  * [efa76d34] get_snapshot_requests safe to be parallel in read window
+
+  [ Zach Butler ]
+  * [2abdaa4f] Minor pinned build script README changes
+  * [1655c667] Pull note about sudo into its own quote block
+  * [320d480b] Cardinal objects should be in a numbered list
+  * [fe74adcf] Restore markdown formatting erroneously deleted in commit 06c9e2532775633466e11225071d384de5b626d1
+
+  [ Lin Huang ]
+  * [25c0efcd] correct version after merging from 4.0.0-rc1
+
+  [ Kevin Heifner ]
+  * [33e1951a] Shutdown all read threads when read_only queue is empty
+  * [f47d7d23] Revert added whitespace
+  * [ac234f65] Add multiple runs to read_only_trx_test.py. Also be explicit about 0 read-only-threads
+  * [d106d18f] Fix rebase merge issue
+  * [780fb3f8] Fix includes
+  * [376470d6] Encapsulate mtx
+
+  [ Lin Huang ]
+  * [d73bf1b0] Use a single timer for read and write windows
+
+  [ 766C6164 ]
+  * [0c448aeb] Adjusted timeout to give better chance on reaching consensus
+
+  [ Kevin Heifner ]
+  * [9e79e82d] GH-891 Integrate new received block into ro_trx_queue
+  * [f07011d8] Minor updates
+  * [f999202e] Check test_mode
+  * [06637d52] Add some calls to read-only actions to the test.
+  * [e8a081c3] Run everything at the same time test
+  * [138737c4] Default read-only-threads to 3 if not specified when eosio::chain_api_plugin configured and not a producer.
+
+  [ Clayton Calabrese ]
+  * [f906cfa6] clean up test wallet littering
+  * [97f02ac1] remove unused code
+  * [a7c34313] prevent snapshot test from creating a bunch of tmp files that aren't cleaned up
+
+  [ Kevin Heifner ]
+  * [18cd288c] Simplify exhausted read-only handling
+
+  [ Clayton Calabrese ]
+  * [d5bbebbb] fix a number of tests that leave logs in TestLogs even on success.
+
+  [ Kevin Heifner ]
+  * [8eaa42ef] Fix for slow runner hitting abi serialization deadline
+
+  [ Clayton Calabrese ]
+  * [e0da601c] fix performance_test and performance_test_basic leaving logs around in TestLogs
+
+  [ Kevin Heifner ]
+  * [fa702aac] Integrate #904 to prevent exit from read window until all threads are idle.
+
+  [ Huang-Ming Huang ]
+  * [e906597c] fix gelf DNS resolves to ipv6 address
+
+  [ Kevin Heifner ]
+  * [2dd1f676] Remove unneeded _ro_exiting_read_window and simplify read_only_execution_task loop
+  * [81ff3987] Simplify use of exhausted read-only trx queue
+  * [f80a95bf] Add verification of posted read_only calls
+  * [6672db33] Remove unneeded check of read-only exhausted trx queue
+  * [6a989fd7] Rename method and honor deadline.
+
+  [ Huang-Ming Huang ]
+  * [59b17402] restore udp non-blocking mode
+
+  [ Clayton Calabrese ]
+  * [07c38c5c] address PR comments for performance_test_basic and auto_bp_peering_test loggin
+  * [97aa5b02] revert change for auto-bp_peering_test that is no longer needed
+  * [3ecb1509] Adjust test harness walletMgr to place files inside the wallet dir
+  * [f07ccdc4] adjust indent
+  * [fb249230] convert to f string in walletMgr
+
+  [ Jonathan Giszczak ]
+  * [661515f5] Implement support for -k/--kill in launcher.
+  * [c708815a] Suppress spurious error and use signal number on all platforms.
+
+  [ Kevin Heifner ]
+  * [ca4de0e4] Remove unneeded cancel and update read-only-threads help description.
+  * [4465a8bd] Cleanup window deadline calculation for read-only trxs. Since repost_exhausted_transactions is called in start_block, check should_interrupt_start_block in while loop.
+  * [efd642b1] GH-596 flush log and index files to make it more likely that a kill-9 or crash leaves valid ship logs.
+  * [bf5746f6] Remove unneeded call to cancel.
+  * [8aab319a] Resize vector to ensure it is empty
+
+  [ 766C6164 ]
+  * [76420887] Improved test stability
+
+  [ Lin Huang ]
+  * [89d334cb] use boost deque which is faster than std:deque
+  * [d86a6bbe] Add more descriptions about read and write timer default values
+  * [06595488] assert chain.is_building_block
+  * [1e0aaf9c] update eos-vm-oc threads limit calculation based on the design
+
+  [ Kevin Heifner ]
+  * [51c4bea2] GH-596 forkdb reset in replay since blocks are signaled
+
+  [ Lin Huang ]
+  * [d27d4cca] incorporate review comments
+
+  [ Huang-Ming Huang ]
+  * [b7b37420] remove commented line
+  * [59a8809f] prometheus on different port
+
+  [ Kevin Heifner ]
+  * [12924afa] Add test for forking in SHiP
+
+  [ Lin Huang ]
+  * [a617c555] better error message
+
+  [ Kevin Heifner ]
+  * [fa8d025c] Make sure SHiP sends new blocks on forks
+  * [6fb28e5f] ship_streamer_test now the longest running nonparallelizable_tests, so make it long_running_test
+
+  [ Lin Huang ]
+  * [89e3a461] fine tuning error message
+  * [a87705b4] Correct transient trx time summary due to read-only trxs can run in both read and write window
+  * [c6d5b13f] remove unneeded is_on_main_thread from controller.hpp
+  * [61f3e7e8] Add missing idle time adjustment while executing read-only trxs and correct a format error
+
+  [ Kevin Heifner ]
+  * [c3814b9e] Use 10 clients for test. Minor cleanups to ship_streamer_test.py
+  * [bb7fc8d1] Fix spelling
+
+  [ Huang-Ming Huang ]
+  * [1b9c6525] address PR comments
+
+  [ Lin Huang ]
+  * [e09d9570] remove duplicated _ro_in_read_only_mode
+
+  [ Kevin Heifner ]
+  * [fa2b7fec] Use f-strings
+
+  [ Lin Huang ]
+  * [adaec770] Bump Leap version to 3.2.3
+
+  [ Kevin Heifner ]
+  * [d40be19b] CORE_SYMBOL is now in TestHarness
+
+  [ Huang-Ming Huang ]
+  * [0355c521] based on boost 1.67 example
+  * [d10df326] avoid std::bind
+
+  [ Lin Huang ]
+  * [66c23b9d] Add execution window APIs to controller so chain can access current execution window
+  * [7586219c] Change to use is_write_window to determine whether it is safe to update eos-vm-oc code cache
+  * [10767014] initialize app_window
+  * [56c6ad3b] replace app().executor().is_write_window() with cleaner chain.is_write_window()
+
+  [ Huang-Ming Huang ]
+  * [bf289ae1] fix for boost 1.74+
+
+  [ Lin Huang ]
+  * [5b1c8dd6] Replace thread_local with unordered_map for wasmif
+  * [647dd99e] wait until all read-only threads are started before proceeding in producer_plugin startup
+  * [9b38815c] make sure app wasm interface methods are called on wasmifs on all the read-only threads
+  * [1f46ff65] remove first_block_num_used from wasm_instantiation_cache
+
+  [ 766C6164 ]
+  * [a93faeb2] Tightened up test a bit
+  * [dee4a153] Stop if pending_snapshots do not exist
+
+  [ Lin Huang ]
+  * [6a97c7bb] revert the change for get_wasm_interface().exit()
+
+  [ 766C6164 ]
+  * [26e2f658] Make pending_snapshot non-optional
+
+  [ Huang-Ming Huang ]
+  * [69a741c5] fix make package
+
+  [ Lin Huang ]
+  * [7e49aa03] remove WASM::check_limits and initial memory from instantiate_module
+  * [6e8bd9ad] remove parse_initial_memory
+  * [b59c1ad5] Remove serialization completely from get_instantiated_module
+  * [2cb34fea] remove unneccessary bytes copying
+  * [9ddf0f7a] remove unused IR::Module module
+
+  [ 766C6164 ]
+  * [b2c81cdb] Multiple updates
+
+  [ Kevin Heifner ]
+  * [610bd6fb] GH-978 Set an upper limit on read-only-threads of 8.
+  * [538437b7] GH-978 Max of 8 read-only threads is allowed
+
+  [ Lin Huang ]
+  * [d9cf9336] add new exceptions for read-only trxs
+  * [1b3e49b9] get_descriptor_for_code returns failure reason and wasm_interface::apply raises appropriate exceptions
+  * [4be7471c] push_read_only_transaction handles temporary and permanent failure exceptions
+
+  [ Kevin Heifner ]
+  * [d5f8575e] GH-980 Restore read-mode=speculative
+
+  [ Matt Witherspoon ]
+  * [3a3d36ab] make `eosio_exit` more direct
+
+  [ Kevin Heifner ]
+  * [08957790] GH-980 Add a version of the distributed transaction test running in read-mode=speculative
+
+  [ Huang-Ming Huang ]
+  * [1b68dd7f] address PR comments
+
+  [ Kevin Heifner ]
+  * [d8168632] GH-980 List speculative mode last since it is deprecated
+
+  [ Lin Huang ]
+  * [e58d26fb] Replace ro_trx_temporary ro_trx_vm_oc_compile_temporary_failure, ro_trx_permanent with ro_trx_vm_oc_compile_permanent_failure, and add better description
+  * [4f35d999] Fix the problem of ro_trx_vm_oc_compile exceptions caught prematurally
+  * [706bbb90] simplify ro_trx_vm_oc_compile_temporary_failure handling
+  * [aa892ef7] fix comments and move get_cd_failure into code_cache_base
+  * [c701194f] Add missing transient_trx_failed_trace_log for speculative execution
+  * [4966b623] [4.0] Bump Leap to release 4.0 rc3
+
+ -- Henrik Hautakoski <henrik@eossweden.org>  Wed, 26 Apr 2023 07:02:25 +0200
+
 leap (4.0.0-rc2-1) unstable; urgency=medium
 
   [ Kevin Heifner ]
