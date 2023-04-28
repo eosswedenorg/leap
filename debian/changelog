@@ -1,3 +1,25 @@
+leap (4.0.0-1) bionic focal; urgency=medium
+
+  [ Huang-Ming Huang ]
+  * [07400555] response to disallowed host
+
+  [ Kevin Heifner ]
+  * [d4bd548d] GH-678 Log all http request/response when debug log enabled
+
+  [ Huang-Ming Huang ]
+  * [7efec6a6] add test
+  * [208c9160] fix resource not found buf
+  * [df88471b] add test
+  * [60456701] fix test
+
+  [ Kevin Heifner ]
+  * [afbcdf24] GH-1003 Reduce producer_plugin debug log spam
+
+  [ Lin Huang ]
+  * [af8383c3] [4.0] Bump Leap version to 4.0.0
+
+ -- Henrik Hautakoski <henrik@eossweden.org>  Fri, 28 Apr 2023 14:29:28 +0200
+
 leap (4.0.0-rc3-1) bionic focal; urgency=medium
 
   [ Lin Huang ]
