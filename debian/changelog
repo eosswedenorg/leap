@@ -1,3 +1,100 @@
+leap (4.0.1-1) jammy; urgency=medium
+
+  [ Zach Butler ]
+  * [866dfae9] Minor pinned build script README changes
+  * [df368551] Pull note about sudo into its own quote block
+  * [7f27916d] Cardinal objects should be in a numbered list
+  * [8fc769ef] Restore markdown formatting erroneously deleted in commit 06c9e2532775633466e11225071d384de5b626d1
+  * [f67e598b] Roll scripts/install_deps.sh into scripts/pinned_build.sh with a guard for Debian-family OSes
+  * [dd2d53d4] Add a warning for OSes that do not have aptitude
+  * [3ed298c7] Add a print statement at the beginning and end of package deps installation
+  * [8c0465a0] Use try() for apt-get commands
+  * [fcb54378] Use sudo for apt-get commands if we are not root
+  * [8b250833] Write code to by-pass invocation of apt-get (and sudo) if dependencies are already installed
+  * [1deeab70] Use "dpkg -s" instead of "dpkg -l"
+  * [75c5f3bc] SC2086 - note: Double quote to prevent globbing and word splitting
+  * [ddfedd4d] SC2207 - warning: Prefer mapfile or read -a to split command output (or quote to avoid splitting)
+  * [c7545f2c] Remove unnecessary MISSING_DEPS var
+  * [41e34c48] Remove hard-coded timezone
+  * [71fe27cf] Remove the "-y" flag from "apt-get install"
+  * [68bf7feb] Remove scripts/install_deps.sh from the README.md
+  * [0fcb2a15] Add a note about the pinned build script asking for a password
+  * [a0a73381] Add a pinned build example where the [Y/n] prompts from aptitude are suppressed
+  * [c21e563b] Make it easier to debug by printing significant commands before running them in try()
+  * [fcdbe4c9] Do not hide exit status in try()
+  * [429e6e76] A comment
+  * [624864f3] Apparently the software suite including `apt-get` is called APT, not aptitude
+  * [9f523ed7] You pass "y", not "-y", lol
+  * [43812298] Guard against sudo being missing
+  * [229de5aa] Fix spurious commit
+
+  [ Pinelliaw ]
+  * [e07fd0a0] Fix not fail on signature checks for dry-run, include the time it takes for checker.all_keys_used()
+
+  [ Eric Passmore ]
+  * [52a7df3d] fixed rel path to Error
+
+  [ iamveritas ]
+  * [c4f383ae] Update swagger files to include: get_transaction_status, compute_transaction, send_transaction2
+  * [4f87a1b0] corect ref links
+  * [18d79f4c] take out <size> cause is not rendered correctly in final docs
+  * [079935ed] improvements based on peer review feedback
+
+  [ Lin Huang ]
+  * [fe64b22d] Do not check execution window related configurations if --read-only-threads is not configured; better error message for invalid --read-only-write-window-time-us
+  * [ce0260f8] test case for read-only trx related options not validated if read-only-threads is 0
+  * [4e98b2e9] make sure _ro_max_trx_time_us is always initialized
+  * [2b509573] use enum instead of bool for better status indication
+  * [11ad31e6] log configuration options and other values from the user perspective
+
+  [ Huang-Ming Huang ]
+  * [4022ed12] change state-history-stride default
+  * [4d30e50b] address PR comments
+
+  [ 766C6164 ]
+  * [9e1edc06] Added additional logging for smoke-test
+
+  [ Huang-Ming Huang ]
+  * [0c2fbe9b] address PR comments
+  * [1c781358] fix replay
+  * [303e1706] fix retained_dir not existed
+
+  [ Kevin Heifner ]
+  * [d3a00fcc] GH-1149 Do not allow remote_endpoint() to throw
+  * [1394cc75] GH-1149 Ignore error of remote_endpoint
+
+  [ Huang-Ming Huang ]
+  * [399b616a] fix file permission
+  * [a206cf1c] fix supplied genesis
+  * [72be7c93] refactor extract_chain_context
+  * [032e6102] fix leap util
+  * [fc91ef75] remove unused include
+
+  [ Kevin Heifner ]
+  * [c45d3dfe] GH-1170 Correctly handle close while syncing
+  * [6489dd22] GH-1170 Update comment
+
+  [ Huang-Ming Huang ]
+  * [f7d28a49] address PR review
+  * [13521b25] fix typo
+
+  [ 766C6164 ]
+  * [b7a9ff52] Capture block_state by ref
+  * [137c93a9] Do not post any updates if thread pool not started yet
+  * [d69cef0c] Update
+  * [70276ce2] typo
+
+  [ Areg Hayrapetian ]
+  * [70ec11d0] Revert "Simplify Pinned Build Scripts"
+
+  [ 766C6164 ]
+  * [3dcaf77b] Added additional comments
+
+  [ Lin Huang ]
+  * [8a6e3e68] Bump Leap to 4.0.1
+
+ -- Henrik Hautakoski <henrik@eossweden.org>  Tue, 27 Jun 2023 11:23:47 +0200
+
 leap (4.0.0-1) bionic focal; urgency=medium
 
   [ Huang-Ming Huang ]
