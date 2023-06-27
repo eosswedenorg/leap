@@ -1,3 +1,76 @@
+leap (4.0.2-1) jammy; urgency=medium
+
+  [ Matt Witherspoon ]
+  * [ae7107bd] remove innocuous stray } in log statement
+
+  [ iamveritas ]
+  * [561da880] release 4.0 add docs/yaml content for missing chain api endpoints:
+  * [3515b839] correct description for read-only
+
+  [ Matt Witherspoon ]
+  * [618915c3] allow ROtrx threads unlimited time to start
+  * [2389bc1c] move blocking start&init to named_thread_pool's start()
+  * [be76e108] catch and handle exceptions from std::thread's ctor
+  * [19af6882] don't hardcode leap in parallel-ctest-containers action
+
+  [ Kevin Heifner ]
+  * [27d049b3] GH-1217 Fix process of state-history-log-retain-blocks option
+
+  [ 766C6164 ]
+  * [852f1bb2] output-dir should be required for extract-blocks
+
+  [ Kevin Heifner ]
+  * [bb289379] GH-1240 Prevent infinite loop in net_plugin by not sending back a handshake for a catch_up notice if nothing new to report.
+
+  [ 766C6164 ]
+  * [48b3beef] make output-dir required for leap-util block-log subcommands
+
+  [ Kevin Heifner ]
+  * [2409db22] GH-1027 catch_up message with head was being ignored. This was likely not noticed before because handshake would provide it eventually.
+  * [affbbd08] GH-1240 get_time is supposed to be nanoseconds
+  * [8ffb1b44] GH-1240 Better handling of close when not syncing
+
+  [ learnforpractice ]
+  * [db657e50] fix `i256` key type conversion by initialize buffer before usage
+
+  [ Kevin Heifner ]
+  * [23c57bf1] GH-1272 Add ship and streamer client to verify blocks received over fork
+  * [93b357dc] GH-1272 Use block_state if it is current block instead of trying to find the block in forkdb
+  * [d4d8839b] GH-1272 Fix merge issue
+
+  [ 766C6164 ]
+  * [53a94a68] if actions.data & actions.hex_data provided, use the hex_data
+  * [167820fc] Addresing feedback - tests, asserts
+
+  [ Kevin Heifner ]
+  * [40332ecc] GH-1228 Add test for reading a snapshot with no block log option.
+  * [02dd569d] GH-1228 Better assertion message
+  * [4734d36b] GH-1228 Fix empty block log to support loading from a snapshot
+  * [3406b688] GH-1228 Improve assert message
+
+  [ 766C6164 ]
+  * [6446f4a9] Updated exceptions
+  * [72f87b87] use EOS_RETHROW_EXCEPTIONS
+
+  [ Kevin Heifner ]
+  * [2a3c0c3d] GH-1228 Additional tests for empty block log
+  * [95996699] GH-1228 Fix for reading a snapshot without a block log but with a fork database
+
+  [ 766C6164 ]
+  * [e165ba91] Added two more validation exceptions from cleos
+
+  [ Kevin Heifner ]
+  * [3f196088] GH-1228 Include invalid get_blocks_result_v0 in the streamer output for debugging
+  * [1dca359a] GH-1228 Log snapshot loaded for both cases
+  * [79535c61] GH-1228 Increase the block_range to include fork
+  * [308a985e] GH-1228 Correctly handle forks
+  * [6991a718] GH-1284 Do not log small clock skew
+
+  [ Lin Huang ]
+  * [b90a843a] [4.0] Bump Leap version to 4.0.2
+
+ -- Henrik Hautakoski <henrik@eossweden.org>  Tue, 27 Jun 2023 11:24:27 +0200
+
 leap (4.0.1-1) jammy; urgency=medium
 
   [ Zach Butler ]
