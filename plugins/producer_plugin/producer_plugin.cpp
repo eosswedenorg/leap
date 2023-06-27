@@ -605,7 +605,7 @@ class producer_plugin_impl : public std::enable_shared_from_this<producer_plugin
          // push the new block
          auto handle_error = [&](const auto& e)
          {
-            elog((e.to_detail_string()));
+            elog("Exception on block ${bn}: ${e}", ("bn", blk_num)("e", e.to_detail_string()));
             app().get_channel<channels::rejected_block>().publish( priority::medium, block );
             throw;
          };
@@ -1183,7 +1183,7 @@ void producer_plugin::plugin_initialize(const boost::program_options::variables_
       // max-transaction-time can be set to negative for unlimited time
      my->_ro_max_trx_time_us = fc::microseconds::maximum();
    }
-   ilog("read-only-threads ${s}, max read-only trx time to be enforced: ${t} us}", ("s", my->_ro_thread_pool_size)("t", my->_ro_max_trx_time_us));
+   ilog("read-only-threads ${s}, max read-only trx time to be enforced: ${t} us", ("s", my->_ro_thread_pool_size)("t", my->_ro_max_trx_time_us));
 
    my->_incoming_block_sync_provider = app().get_method<incoming::methods::block_sync>().register_provider(
          [this](const signed_block_ptr& block, const std::optional<block_id_type>& block_id, const block_state_ptr& bsp) {
@@ -1266,7 +1266,6 @@ void producer_plugin::plugin_startup()
    }
 
    if ( my->_ro_thread_pool_size > 0 ) {
-      std::atomic<uint32_t> num_threads_started = 0;
       my->_ro_thread_pool.start( my->_ro_thread_pool_size,
          []( const fc::exception& e ) {
             fc_elog( _log, "Exception in read-only thread pool, exiting: ${e}", ("e", e.to_detail_string()) );
@@ -1274,18 +1273,7 @@ void producer_plugin::plugin_startup()
          },
          [&]() {
             chain.init_thread_local_data();
-            ++num_threads_started;
          });
-
-      // This will be changed with std::latch or std::atomic<>::wait
-      // when C++20 is used.
-      auto time_slept_ms = 0;
-      constexpr auto max_time_slept_ms = 1000;
-      while ( num_threads_started.load() < my->_ro_thread_pool_size && time_slept_ms < max_time_slept_ms ) {
-         std::this_thread::sleep_for( 1ms );
-         ++time_slept_ms;
-      }
-      EOS_ASSERT(num_threads_started.load() == my->_ro_thread_pool_size, producer_exception, "read-only threads failed to start. num_threads_started: ${n}, time_slept_ms: ${t}ms", ("n", num_threads_started.load())("t", time_slept_ms));
 
       my->start_write_window();
    }
