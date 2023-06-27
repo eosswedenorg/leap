@@ -1,3 +1,15 @@
+leap (4.0.3-1) jammy; urgency=medium
+
+  [ Kevin Heifner ]
+  * [5dbcdc54] GH-1315 Use magnitude safe time types
+  * [b221c12f] GH-1315 Reset latest_msg_time and latest_blk_time so re-connect doesn't trip heartbeat timer
+  * [0b3b3b61] GH-1315 Completely remove problematic tstamp type.
+
+  [ Lin Huang ]
+  * [a7364dc3] Bump Leap version to 4.0.3
+
+ -- Henrik Hautakoski <henrik@eossweden.org>  Tue, 27 Jun 2023 11:25:19 +0200
+
 leap (4.0.2-1) jammy; urgency=medium
 
   [ Matt Witherspoon ]
